@@ -10,44 +10,58 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    
 </head>
 <body>
-    <div class="container">
-        <div class="circle">
-            <div class="quadrant top-left" data-quadrant="top-left"></div>
-            <div class="quadrant top-right" data-quadrant="top-right"></div>
-            <div class="quadrant bottom-left" data-quadrant="bottom-left"></div>
-            <div class="quadrant bottom-right" data-quadrant="bottom-right"></div>
-        </div>
-
-        <ul class="label top-left-label" data-quadrant="top-left">
-            <li>Formales</li>  
-            <li>Precisos</li>  
-            <li>Precavidos</li>  
-            <li>Deliverado</li>  
-            <li>Cuestionado</li>  
-        </ul>
-        <ul class="label top-right-label" data-quadrant="top-right">
-            <li>Propositivo</li>
-            <li>Competitivo</li>
-            <li>Demandante</li>
-            <li>Determinado</li>
-        </ul>
-        <ul class="label bottom-left-label" data-quadrant="bottom-left">
-            <li>Comprensivo</li>
-            <li>Compartido</li>
-            <li>Alentador</li>
-            <li>Relajado</li>
-            <li>Paciente</li>
-        </ul>
-        <ul class="label bottom-right-label" data-quadrant="bottom-right">
-            <li>Dinámico</li>
-            <li>Persuasivo</li>
-            <li>Entusiasta</li>
-            <li>Expresivo</li>
-            <li>Sociable</li>
-        </ul>
+    
+    
+    
+    
+    
+    
+<div class="container">
+    <div class="circle">
+        <div class="quadrant top-left" data-quadrant="top-left"></div>
+        <div class="quadrant top-right" data-quadrant="top-right"></div>
+        <div class="quadrant bottom-left" data-quadrant="bottom-left"></div>
+        <div class="quadrant bottom-right" data-quadrant="bottom-right"></div>
     </div>
+
+    <!-- Etiquetas FUERA del círculo -->
+<span class="label label-top-left">
+  <span>Formales</span>
+  <span>Precisos</span>
+  <span>Precavidos</span>
+  <span>Deliberado</span>
+  <span>Cuestionado</span>
+</span>
+    <span class="label label-top-right">
+  <span>Propositivo</span>
+  <span>Competitivo</span>
+  <span>Demandante</span>
+  <span>Determinado</span>
+</span>
+    <span class="label label-bottom-left">
+  <span>Comprensivo</span>
+  <span>Compartido</span>
+  <span>Alentador</span>
+  <span>Relajado</span>
+  <span>Paciente</span>
+</span>
+    <span class="label label-bottom-right"> 
+  <span>Dinámico</span>
+  <span>Persuasivo</span>
+  <span>Entusiasta</span>
+  <span>Expresivo</span>
+  <span>Sociable</span>
+</span>
+</div>
+
+
+
+
 
     <div id="name-modal" class="modal">
         <div class="modal-content">
@@ -72,7 +86,9 @@
         </div>
     </div>
     
-    <script type="module">
+    
+    
+<script type="module">
       // Importa las funciones necesarias para la aplicación de Firebase
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
       
@@ -106,6 +122,8 @@
       window.query = query;
       window.orderBy = orderBy;
     </script>
+
+
     
     <script src="script.js"></script>
 </body>
