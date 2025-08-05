@@ -9,12 +9,87 @@ body {
     outline: none !important;
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent;
+    
+    /* Agrega esta línea para evitar el scroll vertical */
+    overflow: hidden;
 }
 
+
+
+.label {
+    font-family: 'Poppins', sans-serif;
+    position: absolute;
+    font-size: 12px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    
+    /* Propiedades para el borde y el tamaño fijo */
+    border: 0.5px solid #3E585F;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    
+    /* Cambios para que el texto se apile */
+    display: flex;
+    flex-direction: column; /* Apila los elementos en columna */
+    justify-content: center; /* Centra los elementos verticalmente */
+    
+    padding: 0 10px;
+    text-align: center;
+}
+
+.label span {
+    display: block;   
+    white-space: nowrap; 
+    line-height: 1.2
+    
+}
+
+/* Azul - Arriba Izquierda */
+.label-top-left {
+    top: -185px;       
+    left: -125px;      
+    color: #177CA2;
+    
+}
+
+/* Rosa - Arriba Derecha */
+.label-top-right {
+    top: -185px;
+    right: -125px;
+    color: #D95477;
+    
+}
+
+/* Amarillo - Abajo Izquierda */
+.label-bottom-left {
+    bottom: -185px;
+    left: -125px;
+    color: #EBEF7B;
+    
+}
+
+/* Verde - Abajo Derecha */
+.label-bottom-right {
+    bottom: -185px;
+    right: -125px;
+    color: #71C963;
+    
+}
+
+
+
+
+
+
+
+
+/* Estilos mejorados para el contenedor principal, para que sea responsivo */
 .container {
     position: relative;
-    width: 500px;
-    height: 500px;
+    width: 50vw;
+    max-width: 100px;
+    height: 100vw;
+    max-height: 100px;
 }
 
 .circle {
@@ -71,72 +146,11 @@ body {
     transform: translate(5px, 5px);
 }
 
-/* --- Estilos de las etiquetas (UL mejorados) --- */
-.label {
-    position: absolute;
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    color: #E0E0E0;
-    list-style-type: none;
-    margin: 0;
-    border: 1px solid rgba(130, 129, 131, 0.4);
-    border-radius: 12px;
-    padding: 15px 20px;
-    background: rgba(23, 23, 23, 0.8);
-    backdrop-filter: blur(4px);
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.label:hover {
-    border-color: #A0A0A0;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    transform: scale(1.05);
-}
-
-.label li {
-    padding: 2px 0;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-}
-
-.label li:hover {
-    opacity: 1;
-}
-
-/* --- Estilos para las líneas y puntos de conexión (mejorados) --- */
-.label::before,
-.label::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: -1;
-    transition: all 0.3s ease;
-}
-
-.label::before {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-}
-
-.label::after {
-    height: 2px;
-    width: 40px;
-}
-
-/* Eliminamos los efectos de hover en las líneas para evitar la expansión */
-/* .label:hover::before,
-.label:hover::after {
-    ...
-} */
 
 /* --- Posicionamiento de las etiquetas (Escritorio) --- */
 .top-left-label {
-    top: 15%; /* Ajustamos la posición para más separación */
-    left: -18%; /* Movemos más a la izquierda */
+    top: 15%;
+    left: -18%;
     color: #BBE7F4;
 }
 .top-left-label::after {
@@ -217,7 +231,11 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    
+    max-height: 100vh;
+    overflow-y: auto;
 }
+
 
 .modal-content h2 {
     margin-top: 0;
@@ -258,7 +276,7 @@ body {
 }
 
 #save-name-button {
-    padding: 10px 15px;
+    padding: 0 15px;
     margin-top: 10px;
     width: 120px;
     height: 35px;
@@ -270,7 +288,7 @@ body {
     color: #fff;
     background-color: #1B3439;
     border: none;
-    border-radius: 35px;
+    border-radius: 5px;
     transition: background-color 1s ease, transform 0.3s ease, color 3s ease;
     cursor: pointer;
     outline: none;
@@ -287,7 +305,7 @@ body {
 }
 
 .name-list-container {
-    max-height: 150px;
+    max-height: 200px;
     overflow-y: auto;
     margin-bottom: 15px;
     background-color: #171717;
@@ -392,99 +410,19 @@ body {
     background-color: #777;
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 768px) {
-    .container {
-        width: 400px;
-        height: 400px;
-    }
 
+/* --- Media Query para dispositivos móviles --- */
+@media (max-width: 600px) {
     .circle {
-        width: 200px;
-        height: 200px;
+        width: 250px;
+        height: 250px;
     }
 
-    .label {
-        font-size: 11px;
-        padding: 8px;
-    }
-
-    .label::after {
-        width: 30px;
-    }
-
-    .label::before {
-        width: 10px;
-        height: 10px;
-    }
-
-    .label:hover {
-        transform: scale(1.0);
-    }
+    .quadrant:active {
+        /* Esto hace que el cuadrante brille */
+    filter: brightness(1.2);
 }
 
-@media (max-width: 480px) {
-    .container {
-        width: 300px;
-        height: 300px;
     }
 
-    .circle {
-        width: 220px;
-        height: 220px;
-    }
 
-    .label {
-        font-size: 9px;
-        padding: 5px;
-    }
-
-    .top-left-label {
-        top: 10%; /* Más espacio en pantallas pequeñas */
-        left: -15%;
-    }
-    .top-right-label {
-        top: 10%;
-        right: -15%;
-    }
-    .bottom-left-label {
-        bottom: 10%;
-        left: -15%;
-    }
-    .bottom-right-label {
-        bottom: 10%;
-        right: -15%;
-    }
-
-    .label::after {
-        width: 15px;
-    }
-
-    .top-left-label::after {
-        right: -15px;
-    }
-    .top-left-label::before {
-        right: -25px;
-    }
-
-    .top-right-label::after {
-        left: -15px;
-    }
-    .top-right-label::before {
-        left: -25px;
-    }
-
-    .bottom-left-label::after {
-        right: -15px;
-    }
-    .bottom-left-label::before {
-        right: -25px;
-    }
-
-    .bottom-right-label::after {
-        left: -15px;
-    }
-    .bottom-right-label::before {
-        left: -25px;
-    }
-}
