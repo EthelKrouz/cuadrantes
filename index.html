@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Círculo con Cuadrantes</title>
+    <link rel="stylesheet" href="estilo.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="container">
+        <div class="circle">
+            <div class="quadrant top-left" data-quadrant="top-left"></div>
+            <div class="quadrant top-right" data-quadrant="top-right"></div>
+            <div class="quadrant bottom-left" data-quadrant="bottom-left"></div>
+            <div class="quadrant bottom-right" data-quadrant="bottom-right"></div>
+        </div>
+
+        <ul class="label top-left-label" data-quadrant="top-left">
+            <li>Formales</li>  
+            <li>Precisos</li>  
+            <li>Precavidos</li>  
+            <li>Deliverado</li>  
+            <li>Cuestionado</li>  
+        </ul>
+        <ul class="label top-right-label" data-quadrant="top-right">
+            <li>Propositivo</li>
+            <li>Competitivo</li>
+            <li>Demandante</li>
+            <li>Determinado</li>
+        </ul>
+        <ul class="label bottom-left-label" data-quadrant="bottom-left">
+            <li>Comprensivo</li>
+            <li>Compartido</li>
+            <li>Alentador</li>
+            <li>Relajado</li>
+            <li>Paciente</li>
+        </ul>
+        <ul class="label bottom-right-label" data-quadrant="bottom-right">
+            <li>Dinámico</li>
+            <li>Persuasivo</li>
+            <li>Entusiasta</li>
+            <li>Expresivo</li>
+            <li>Sociable</li>
+        </ul>
+    </div>
+
+    <div id="name-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title"></h2>
+            <div class="name-list-container">
+                <ul id="name-list"></ul>
+            </div>
+            <input type="text" id="name-input" placeholder="Escribe un nombre">
+            <button id="save-name-button">Guardar</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="confirm-modal-title"></h2>
+            <p>¿Estás seguro de que deseas borrar a <span id="name-to-delete" class="name-to-delete-style"></span>?</p>
+            <div class="confirm-buttons">
+                <button id="cancel-delete-button">Cancelar</button>
+                <button id="accept-delete-button">Aceptar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+      // Importa las funciones necesarias para la aplicación de Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+      
+      // Importa las funciones para Firestore
+      import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+      // Tu configuración de Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyAIUcaUs9cGgETsJwl-1sJBHigLtl0ICHc",
+        authDomain: "cuadrantes-ethel.firebaseapp.com",
+        projectId: "cuadrantes-ethel",
+        storageBucket: "cuadrantes-ethel.firebasestorage.app",
+        messagingSenderId: "948939710834",
+        appId: "1:948939710834:web:13487e974eb05c13767deb",
+        measurementId: "G-HM1TENWLN6"
+      };
+
+      // Inicializa la aplicación de Firebase
+      const app = initializeApp(firebaseConfig);
+      
+      // Inicializa Firestore y obtén una referencia a la base de datos
+      const db = getFirestore(app);
+
+      // Exporta 'db' para que puedas usarlo en tu script.js
+      window.db = db;
+      window.collection = collection;
+      window.addDoc = addDoc;
+      window.getDocs = getDocs;
+      window.deleteDoc = deleteDoc;
+      window.doc = doc;
+      window.query = query;
+      window.orderBy = orderBy;
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
