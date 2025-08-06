@@ -90,7 +90,7 @@ body {
     max-width: 100px;
     height: 100vw;
     max-height: 100px;
-    transform: translateY(-100px);
+    transform: translateY(-50px);
 }
 
 .circle {
