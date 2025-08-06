@@ -85,11 +85,12 @@ body {
 
 /* Estilos mejorados para el contenedor principal, para que sea responsivo */
 .container {
-    position: relative;
+    position: fixed;
     width: 50vw;
     max-width: 100px;
     height: 100vw;
     max-height: 100px;
+    transform: translateY(-100px);
 }
 
 .circle {
