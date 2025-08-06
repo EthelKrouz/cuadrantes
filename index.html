@@ -43,19 +43,21 @@
   <span>Demandante</span>
   <span>Determinado</span>
 </span>
-    <span class="label label-bottom-left">
-  <span>Comprensivo</span>
-  <span>Compartido</span>
-  <span>Alentador</span>
-  <span>Relajado</span>
-  <span>Paciente</span>
-</span>
-    <span class="label label-bottom-right"> 
+    
+    <span class="label label-bottom-left"> 
   <span>Dinámico</span>
   <span>Persuasivo</span>
   <span>Entusiasta</span>
   <span>Expresivo</span>
   <span>Sociable</span>
+</span>
+
+<span class="label label-bottom-right">
+  <span>Comprensivo</span>
+  <span>Compartido</span>
+  <span>Alentador</span>
+  <span>Relajado</span>
+  <span>Paciente</span>
 </span>
 </div>
 
@@ -89,40 +91,39 @@
     
     
 <script type="module">
-      // Importa las funciones necesarias para la aplicación de Firebase
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-      
-      // Importa las funciones para Firestore
-      import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  // Importa las funciones necesarias para la aplicación de Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  
+  // Importa las funciones para Firestore
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-      // Tu configuración de Firebase
-      const firebaseConfig = {
-        apiKey: "AIzaSyAIUcaUs9cGgETsJwl-1sJBHigLtl0ICHc",
-        authDomain: "cuadrantes-ethel.firebaseapp.com",
-        projectId: "cuadrantes-ethel",
-        storageBucket: "cuadrantes-ethel.firebasestorage.app",
-        messagingSenderId: "948939710834",
-        appId: "1:948939710834:web:13487e974eb05c13767deb",
-        measurementId: "G-HM1TENWLN6"
-      };
+  // Tu configuración de Firebase para "cuadrantes-prueba"
+  const firebaseConfig = {
+    apiKey: "AIzaSyAl5sRY-zHUXqor6TIZqnAgDmMfmZaTxrI",
+    authDomain: "cuadrantes-prueba.firebaseapp.com",
+    projectId: "cuadrantes-prueba",
+    storageBucket: "cuadrantes-prueba.firebasestorage.app",
+    messagingSenderId: "874236542346",
+    appId: "1:874236542346:web:f1fd0425f545dbdb351c73",
+    measurementId: "G-DWD72WPY8R"
+  };
 
-      // Inicializa la aplicación de Firebase
-      const app = initializeApp(firebaseConfig);
-      
-      // Inicializa Firestore y obtén una referencia a la base de datos
-      const db = getFirestore(app);
+  // Inicializa la aplicación de Firebase
+  const app = initializeApp(firebaseConfig);
+  
+  // Inicializa Firestore y obtén una referencia a la base de datos
+  const db = getFirestore(app);
 
-      // Exporta 'db' para que puedas usarlo en tu script.js
-      window.db = db;
-      window.collection = collection;
-      window.addDoc = addDoc;
-      window.getDocs = getDocs;
-      window.deleteDoc = deleteDoc;
-      window.doc = doc;
-      window.query = query;
-      window.orderBy = orderBy;
-    </script>
-
+  // Exporta 'db' para que puedas usarlo en tu script.js
+  window.db = db;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.getDocs = getDocs;
+  window.deleteDoc = deleteDoc;
+  window.doc = doc;
+  window.query = query;
+  window.orderBy = orderBy;
+</script>
 
     
     <script src="script.js"></script>
