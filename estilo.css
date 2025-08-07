@@ -460,9 +460,11 @@ body {
 /* Estilos específicos para la modal de confirmación */
 .confirm-buttons {
     display: flex;
-    justify-content: space-around;
+    justify-content: center; /* Centra los botones dentro del contenedor */
+    gap: 20px; /* Agrega 20px de espacio entre los botones */
     margin-top: 20px;
 }
+
 
 #accept-delete-button {
     padding: 10px 20px;
