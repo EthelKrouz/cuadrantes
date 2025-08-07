@@ -9,101 +9,169 @@ body {
     outline: none !important;
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent;
-    
-    /* Agrega esta línea para evitar el scroll vertical */
     overflow: hidden;
+}
+
+/* --- Nuevo botón para abrir la modal del círculo --- */
+.open-button {
+    /* --- CAMBIO CORREGIDO --- */
+    position: absolute; 
+    top: 20px;
+    right: 10px;
+    padding: 8px 15px;
+    font-size: 14px;
+    
+    color: #3CA086;
+    background-color: transparent;
+    border: 0.5px solid #3CA086;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s ease;
+    
 }
 
 
 
+/* --- Mejora de los estilos para las etiquetas (labels) --- */
+/* Estilos generales para todos los dispositivos */
 .label {
     font-family: 'Poppins', sans-serif;
-    position: absolute;
-    font-size: 12px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    font-size: 13px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+
+    border-radius: 15px;
     
-    /* Propiedades para el borde y el tamaño fijo */
-    border: 0.5px solid #3E585F;
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
+    width: 100px;
+    height: 100px;
     
-    /* Cambios para que el texto se apile */
+    background: rgba(30, 30, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+
     display: flex;
-    flex-direction: column; /* Apila los elementos en columna */
-    justify-content: center; /* Centra los elementos verticalmente */
-    
-    padding: 0 10px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+
+    padding: 5px 12px;
     text-align: center;
+    opacity: 0.9;
+    transition: all 0.4s ease-in-out;
+}
+
+/* Posicionamiento para dispositivos móviles (por defecto) */
+.label-top-left {
+    top: 100px; /* Reducido */       
+    left: 10px; /* Reducido */      
+    color: #92DFFC;
+}
+
+.label-top-right {
+    top: 100px; /* Reducido */
+    right: 10px; /* Reducido */
+    color: #F8B4C7;
+}
+
+.label-bottom-left {
+    bottom: 100px; /* Reducido */
+    left: 10px; /* Reducido */
+    color: #F2F5BC;
+}
+
+.label-bottom-right {
+    bottom: 100px; /* Reducido */
+    right: 10px; /* Reducido */
+    color: #A9E1A1;
+}
+
+/* Media Query para pantallas de escritorio */
+@media (min-width: 769px) {
+    .label-top-left {
+        top: 150px; /* Ajustado */
+        left: 150px; /* Ajustado */
+    }
+
+    .label-top-right {
+        top: 150px; /* Ajustado */
+        right: 150px; /* Ajustado */
+    }
+
+    .label-bottom-left {
+        bottom: 150px; /* Ajustado */
+        left: 150px; /* Ajustado */
+    }
+
+    .label-bottom-right {
+        bottom: 150px; /* Ajustado */
+        right: 150px; /* Ajustado */
+    }
+}
+
+
+/* Media Query para pantallas de escritorio (a partir de 769px) */
+@media (min-width: 769px) {
+    .label-top-left {
+        top: 700px;
+        left: 165px;
+    }
+
+    .label-top-right {
+        top: 700px;
+        right: 165px;
+    }
+
+    .label-bottom-left {
+        bottom: 700px;
+        left: 165px;
+    }
+
+    .label-bottom-right {
+        bottom: 700px;
+        right: 165px;
+    }
+}
+
+
+/* El resto de tu CSS (hover, etc.) */
+.label:hover {
+    transform: scale(1.1);
+    opacity: 1;
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .label span {
     display: block;   
     white-space: nowrap; 
-    line-height: 1.2
-    
+    line-height: 1.3;
+    font-weight: 300;
+    letter-spacing: 0.5px;
 }
 
-/* Azul - Arriba Izquierda */
-.label-top-left {
-    top: -185px;       
-    left: -125px;      
-    color: #177CA2;
-    
+@media (max-width: 768px) {
+  .label {
+    width: min(25vw, 120px);
+    height: min(25vw, 120px);
+    font-size: 11px;
+  }
 }
 
-/* Rosa - Arriba Derecha */
-.label-top-right {
-    top: -185px;
-    right: -125px;
-    color: #D95477;
-    
-}
-
-/* Amarillo - Abajo Izquierda */
-.label-bottom-left {
-    bottom: -185px;
-    left: -125px;
-    color: #EBEF7B;
-    
-}
-
-/* Verde - Abajo Derecha */
-.label-bottom-right {
-    bottom: -185px;
-    right: -125px;
-    color: #71C963;
-    
-}
-
-
-
-
-
-
-
-
-/* Estilos mejorados para el contenedor principal, para que sea responsivo */
-.container {
-    position: fixed;
-    width: 50vw;
-    max-width: 100px;
-    height: 100vw;
-    max-height: 100px;
-    transform: translateY(-50px);
-}
 
 .circle {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 280px;
-    height: 280px;
+    width: min(50vw, 350px);
+    height: min(50vw, 350px);
     border-radius: 50%;
     overflow: hidden;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Cuadrantes */
 .quadrant {
@@ -112,10 +180,12 @@ body {
     height: 50%;
     cursor: pointer;
     transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), filter 0.4s ease;
+    
 }
 
 .quadrant:hover {
-    filter: brightness(1.2);
+    filter: brightness(1.3);
+    
 }
 
 .top-left {
@@ -159,6 +229,7 @@ body {
     background-color: #177ca2;
 }
 .top-left-label::before {
+    top: 15%;
     right: -52px;
     background-color: #177ca2;
 }
@@ -215,9 +286,15 @@ body {
     width: 100%;
     height: 100%;
     overflow: auto;
+    
 }
 
 .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     background-color: rgba(44, 44, 44, 0.1);
     backdrop-filter: blur(6px);
     padding: 25px;
@@ -225,7 +302,6 @@ body {
     width: 80%;
     max-width: 400px;
     border-radius: 10px;
-    text-align: center;
     color: #CBCBCA;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     position: absolute;
@@ -236,7 +312,6 @@ body {
     max-height: 100vh;
     overflow-y: auto;
 }
-
 
 .modal-content h2 {
     margin-top: 0;
@@ -261,13 +336,16 @@ body {
 }
 
 #name-input {
-    width: calc(100% - 20px);
+    width: 100%; /* --- CAMBIO CORREGIDO --- */
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
     border: 1px solid #555;
     background-color: #171717;
     color: #fff;
+    /* --- CAMBIO CORREGIDO --- */
+    box-sizing: border-box; 
+    align-self: stretch;
 }
 
 #name-input:focus {
@@ -277,9 +355,10 @@ body {
 }
 
 #save-name-button {
+    /* --- CAMBIO CORREGIDO --- */
+    width: 100%;
     padding: 0 15px;
     margin-top: 10px;
-    width: 120px;
     height: 35px;
     font-family: 'Poppins', sans-serif;
     font-size: 11px;
@@ -313,6 +392,8 @@ body {
     border-radius: 5px;
     padding: 10px;
     border: 1px solid #3F7883;
+    /* --- CAMBIO CORREGIDO --- */
+    align-self: stretch;
 }
 
 #name-list {
@@ -415,15 +496,166 @@ body {
 /* --- Media Query para dispositivos móviles --- */
 @media (max-width: 600px) {
     .circle {
-        width: 250px;
-        height: 250px;
+        width: 270px;
+        height: 270px;
     }
+    
+    .container {
+    position: fixed;
+    width: 20vw;
+    max-width: 100px;
+    height: 100vw;
+    max-height: 100px;
+    
+    
+}
 
     .quadrant:active {
-        /* Esto hace que el cuadrante brille */
     filter: brightness(1.2);
 }
 
     }
 
 
+/* --- Estilos para el nuevo círculo dentro de la modal --- */
+.circle-modal-content {
+    max-width: 500px;
+    position: relative; /* Para que el botón de descarga se posicione correctamente */
+}
+
+.new-circle-container {
+    position: relative;
+    width: 300px; 
+    height: 300px;
+    margin: 0 auto;
+}
+
+/* Oculta el contenedor del círculo por defecto */
+.new-circle-container.hidden {
+    display: none;
+}
+
+.new-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    background-color: transparent;
+}
+
+.new-quadrant {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    cursor: default; 
+    transition: none; 
+    transform: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    overflow-y: auto;
+}
+
+/* Colores de los cuadrantes del círculo modal. */
+.new-quadrant.top-left {
+    top: 0;
+    left: 0;
+    background-color: #5CA5BB; /* Azul más vibrante */
+    color: #FFFFFF;
+}
+.new-quadrant.top-right {
+    top: 0;
+    right: 0;
+    background-color: #C94C69; /* Rojo más vibrante */
+    color: #FFFFFF;
+}
+/* CORRECCIÓN: El cuadrante inferior izquierdo es ahora AMARILLO. */
+.new-quadrant.bottom-left {
+    bottom: 0;
+    left: 0;
+    background-color: #D5D968; /* Amarillo más vibrante */
+    color: #FFFFFF;
+}
+
+.new-quadrant.bottom-right {
+    bottom: 0;
+    right: 0;
+    background-color: #63C963; /* Verde más vibrante */
+    color: #FFFFFF;
+}
+
+.new-quadrant:hover {
+    transform: none;
+}
+
+.new-quadrant-name {
+    font-size: 13px;
+    line-height: 1.0;
+    margin: 2px 0;
+    font-weight: 300;
+}
+
+.new-quadrant-name-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* --- Estilos para el nuevo botón de descarga --- */
+.download-button {
+    /* Eliminamos el posicionamiento absoluto */
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #358B76;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1; /* Por defecto visible */
+    z-index: 10;
+    /* Usamos margin para separarlo del círculo */
+    margin-top: 20px;
+}
+
+/* Estilos para el botón de descarga oculto */
+.download-button.hidden {
+    opacity: 0;
+    pointer-events: none; /* Para que no sea clickeable cuando está oculto */
+    transform: translateY(20px);
+}
+
+.download-button:hover {
+    background-color: #1B3439;
+}
+
+/* --- Estilos para el Anillo de Carga (Spinner) --- */
+.loading-spinner {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top: 5px solid #8EEEFF; /* El color del anillo */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
