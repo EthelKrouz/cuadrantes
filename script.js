@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bottomRightNames = await getNamesForQuadrant('bottom-right');
 
         const createNameList = (names, color) => {
-            return names.map(name => `<li style="font-size: 14px; line-height: 1.0; margin: 2px 0; font-weight: 300; color: ${color};">${name}</li>`).join('');
+            return names.map(name => `<li style="font-size: 24px; line-height: 1.0; margin: 2px 0; font-weight: 300; color: ${color};">${name}</li>`).join('');
         };
         
         // Contenedor temporal para los cuadrantes (un cuadrado que luego será un círculo).
