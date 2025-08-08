@@ -61,7 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Lógica del botón de descarga para generar la imagen ---
     downloadButton.addEventListener('click', () => {
-        captureAndDownloadNames();
+        // Llama a la función de captura y descarga con el color de fondo deseado
+        // Para fondo transparente:
+        // captureAndDownloadNames(null); 
+        
+        // Para fondo negro:
+        captureAndDownloadNames('#000000');
     });
 
     async function getNamesForQuadrant(quadrantName) {
@@ -294,7 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- FUNCIÓN PARA CAPTURAR Y DESCARGAR LA IMAGEN DEL CÍRCULO ---
-    async function captureAndDownloadNames() {
+    // Recibe un argumento `bgColor` que puede ser un código de color (e.g., '#000000') o `null` para transparente.
+    async function captureAndDownloadNames(bgColor) {
         downloadButton.style.display = 'none';
         loadingSpinner.style.display = 'block';
 
@@ -339,7 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
         tempCircleContainer.style.height = '600px';
         tempCircleContainer.style.borderRadius = '50%';
         tempCircleContainer.style.overflow = 'hidden';
-        tempCircleContainer.style.backgroundColor = '#171717'; // Fondo oscuro si es necesario
+        
+        // Establece el color de fondo dinámicamente
+        if (bgColor) {
+            tempCircleContainer.style.backgroundColor = bgColor;
+        } else {
+            tempCircleContainer.style.backgroundColor = 'transparent';
+        }
+
         tempCircleContainer.style.position = 'fixed';
         tempCircleContainer.style.top = '-9999px';
 
@@ -349,7 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // html2canvas ahora capturará el contenedor circular.
         html2canvas(tempCircleContainer, {
-            scale: 2
+            scale: 2,
+            backgroundColor: bgColor // Pasa el color de fondo a la configuración de html2canvas
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'cuadrantes.png';
