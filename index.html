@@ -60,7 +60,7 @@
         <div id="loading-spinner" class="loading-spinner"></div>
         <div id="new-circle-container">
             </div>
-        <button id="download-button" class="download-button hidden">Descargar</button>
+        <button id="download-button" class="download-button hidden">Descargar en imagen</button>
     </div>
 </div>
 
@@ -90,30 +90,23 @@
     
     
 <script type="module">
-  // Importa las funciones necesarias para la aplicación de Firebase y Firestore
+  // ... (Tu código de Firebase sin cambios) ...
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-analytics.js";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-  // Tu nueva configuración de Firebase
   const firebaseConfig = {
-    apiKey: "AIzaSyAIUcaUs9cGgETsJwl-1sJBHigLtl0ICHc",
-    authDomain: "cuadrantes-ethel.firebaseapp.com",
-    projectId: "cuadrantes-ethel",
-    storageBucket: "cuadrantes-ethel.firebasestorage.app",
-    messagingSenderId: "948939710834",
-    appId: "1:948939710834:web:13487e974eb05c13767deb",
-    measurementId: "G-HM1TENWLN6"
+    apiKey: "AIzaSyAl5sRY-zHUXqor6TIZqnAgDmMfmZaTxrI",
+    authDomain: "cuadrantes-prueba.firebaseapp.com",
+    projectId: "cuadrantes-prueba",
+    storageBucket: "cuadrantes-prueba.firebasestorage.app",
+    messagingSenderId: "874236542346",
+    appId: "1:874236542346:web:f1fd0425f545dbdb351c73",
+    measurementId: "G-DWD72WPY8R"
   };
 
-  // Inicializa la aplicación de Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  
-  // Inicializa Firestore y obtén una referencia a la base de datos
   const db = getFirestore(app);
 
-  // Exporta 'db' y las funciones de Firestore para usarlas en otros scripts
   window.db = db;
   window.collection = collection;
   window.addDoc = addDoc;
