@@ -43,8 +43,11 @@ body {
 
     border-radius: 15px;
     
-    width: 100px;
-    height: 100px;
+    /* Usamos unidades relativas para que escalen con el tamaño de la pantalla */
+    width: 25vmin; 
+    height: 25vmin;
+    max-width: 120px; 
+    max-height: 120px;
     
     background: rgba(30, 30, 30, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -64,73 +67,56 @@ body {
 
 /* Posicionamiento para dispositivos móviles (por defecto) */
 .label-top-left {
-    top: 100px; /* Reducido */       
-    left: 10px; /* Reducido */      
+    top: 30vmin;        
+    left: 5vmin;     
     color: #92DFFC;
 }
 
 .label-top-right {
-    top: 100px; /* Reducido */
-    right: 10px; /* Reducido */
+    top: 30vmin;
+    right: 5vmin;
     color: #F8B4C7;
 }
 
 .label-bottom-left {
-    bottom: 100px; /* Reducido */
-    left: 10px; /* Reducido */
+    bottom: 30vmin;
+    left: 5vmin;
     color: #F2F5BC;
 }
 
 .label-bottom-right {
-    bottom: 100px; /* Reducido */
-    right: 10px; /* Reducido */
+    bottom: 30vmin;
+    right: 5vmin;
     color: #A9E1A1;
 }
 
 /* Media Query para pantallas de escritorio */
 @media (min-width: 769px) {
+    /* Aquí puedes ajustar el posicionamiento para una experiencia de escritorio */
+    .label {
+        width: 150px;
+        height: 150px;
+        font-size: 16px;
+    }
+
     .label-top-left {
-        top: 150px; /* Ajustado */
-        left: 150px; /* Ajustado */
+        top: 20%;
+        left: 20%;
     }
 
     .label-top-right {
-        top: 150px; /* Ajustado */
-        right: 150px; /* Ajustado */
+        top: 20%;
+        right: 20%;
     }
 
     .label-bottom-left {
-        bottom: 150px; /* Ajustado */
-        left: 150px; /* Ajustado */
+        bottom: 20%;
+        left: 20%;
     }
 
     .label-bottom-right {
-        bottom: 150px; /* Ajustado */
-        right: 150px; /* Ajustado */
-    }
-}
-
-
-/* Media Query para pantallas de escritorio (a partir de 769px) */
-@media (min-width: 769px) {
-    .label-top-left {
-        top: 700px;
-        left: 165px;
-    }
-
-    .label-top-right {
-        top: 700px;
-        right: 165px;
-    }
-
-    .label-bottom-left {
-        bottom: 700px;
-        left: 165px;
-    }
-
-    .label-bottom-right {
-        bottom: 700px;
-        right: 165px;
+        bottom: 20%;
+        right: 20%;
     }
 }
 
