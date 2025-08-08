@@ -598,15 +598,18 @@ body {
     margin: 0;
 }
 
+
+
 /* --- Estilos para el nuevo botón de descarga --- */
+
 .download-button {
     /* Eliminamos el posicionamiento absoluto */
     padding: 10px 20px;
     font-size: 14px;
     font-weight: 500;
-    color: #fff;
-    background-color: #358B76;
-    border: none;
+    color: #40A99B;
+    background-color: transparent;
+    border: 1px solid #40A99B;
     border-radius: 5px;
     cursor: pointer;
     transition: opacity 0.5s ease, transform 0.5s ease;
@@ -626,6 +629,12 @@ body {
 .download-button:hover {
     background-color: #1B3439;
 }
+
+
+
+
+
+
 
 /* --- Estilos para el Anillo de Carga (Spinner) --- */
 .loading-spinner {
