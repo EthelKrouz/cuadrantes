@@ -56,15 +56,28 @@
     </span>
 
 </div>
+
+
+
+
 <div id="circle-modal" class="modal">
     <div class="modal-content circle-modal-content">
         <span class="close-button close-circle-modal-button">&times;</span>
         <div id="loading-spinner" class="loading-spinner"></div>
         <div id="new-circle-container">
+        </div>
+        <div class="download-area">
+            <button id="download-button" class="download-button hidden">Descargar en imagen</button>
+            <div id="progress-container" class="progress-container hidden">
+                <div id="progress-bar" class="progress-bar"></div>
             </div>
-        <button id="download-button" class="download-button hidden">Descargar en imagen</button>
+        </div>
+        <div id="download-message" class="download-message hidden">
+            Se está generando la imagen, espere...
+        </div>
     </div>
 </div>
+
 
     
 <div id="name-modal" class="modal">
@@ -126,9 +139,7 @@
   window.orderBy = orderBy;
 </script>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 
 
 <script src="script.js"></script>
