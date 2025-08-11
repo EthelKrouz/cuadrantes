@@ -528,8 +528,9 @@ body {
 
 
 .circle-modal-content {
-    max-width: 500px;
+    max-width: 300px;
     position: relative;
+    width: 100%;
 }
 
 .new-circle-container {
@@ -538,7 +539,7 @@ body {
     height: 300px;
     margin: 0 auto;
     max-width: 300px;
-    overflow-x: hidden;:
+    overflow-x: hidden;
 }
 
 
@@ -555,9 +556,8 @@ body {
     height: 100%;
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
     background-color: transparent;
-    overflow-x: hidden;:
+    overflow-x: hidden;
 }
 
 .new-quadrant {
