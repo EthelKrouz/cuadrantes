@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Referencias a elementos del DOM (sin cambios)
     const quadrants = document.querySelectorAll('.quadrant');
     const nameModal = document.getElementById('name-modal');
     const nameModalCloseButton = nameModal.querySelector('.close-name-modal-button');
@@ -30,7 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'bottom-right': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
     
-    // --- FUNCIÓN PARA OCULTAR Y CERRAR LA MODAL DEL CÍRCULO ---
+    // --- NUEVA FUNCIÓN PARA ABRIR CUALQUIER MODAL Y MANEJAR EL HISTORIAL ---
+    function openModal(modalElement, modalId) {
+        modalElement.style.display = 'block';
+        // Agrega una nueva entrada al historial del navegador.
+        // Esto permite cerrar la modal con el botón de retroceso.
+        history.pushState({ modalId: modalId }, '', `#${modalId}`);
+    }
+
+    // --- FUNCIÓN PARA CERRAR LA MODAL DEL CÍRCULO ---
     function closeCircleModal() {
         circleModal.style.display = 'none';
         newCircleContainer.innerHTML = '';
@@ -38,6 +47,29 @@ document.addEventListener('DOMContentLoaded', () => {
         newCircleContainer.classList.add('hidden');
         downloadButton.classList.add('hidden');
         openCircleModalButton.style.display = 'block';
+    }
+
+    // --- FUNCIÓN PARA CERRAR LA MODAL DE NOMBRES ---
+    function closeNameModal() {
+        nameModal.style.display = 'none';
+        nameInput.value = '';
+        nameInput.blur(); 
+        
+        quadrants.forEach(quadrant => {
+            const type = quadrant.dataset.quadrant;
+            quadrant.style.zIndex = '1';
+            quadrant.style.opacity = '1';
+            
+            if (type === 'top-left') {
+                quadrant.style.transform = 'translate(-5px, -5px)';
+            } else if (type === 'top-right') {
+                quadrant.style.transform = 'translate(5px, -5px)';
+            } else if (type === 'bottom-left') {
+                quadrant.style.transform = 'translate(-5px, 5px)';
+            } else if (type === 'bottom-right') {
+                quadrant.style.transform = 'translate(5px, 5px)';
+            }
+        });
     }
 
     // --- FUNCIÓN PARA MOSTRAR EL BOTÓN DE DESCARGA ---
@@ -48,24 +80,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Lógica del nuevo botón y la modal del círculo ---
     openCircleModalButton.addEventListener('click', () => {
         openCircleModalButton.style.display = 'none';
-        circleModal.style.display = 'block';
         loadingSpinner.style.display = 'block';
         newCircleContainer.classList.add('hidden');
         downloadButton.classList.add('hidden');
         renderNewCircle();
+        openModal(circleModal, 'circle-modal');
     });
 
     circleModalCloseButton.addEventListener('click', () => {
-        closeCircleModal();
+        // En lugar de cerrar la modal directamente, navegamos hacia atrás en el historial.
+        // Esto activará el evento 'popstate' y la cerrará.
+        history.back();
     });
 
     // --- Lógica del botón de descarga para generar la imagen ---
     downloadButton.addEventListener('click', () => {
-        // Llama a la función de captura y descarga con el color de fondo deseado
-        // Para fondo transparente:
-        // captureAndDownloadNames(null); 
-        
-        // Para fondo negro:
         captureAndDownloadNames('#000000');
     });
 
@@ -115,18 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         newCircleContainer.innerHTML = circleHTML;
-        
-        // --- CÓDIGO CORREGIDO PARA UNA MEJOR EXPERIENCIA DE CARGA ---
         newCircleContainer.classList.remove('hidden');
 
         setTimeout(() => {
             loadingSpinner.style.display = 'none';
             showDownloadButton();
         }, 150);
-        // --- FIN DEL CÓDIGO CORREGIDO ---
     }
 
-    // --- Lógica del círculo principal (sin cambios) ---
+    // --- Lógica del círculo principal ---
     quadrants.forEach(quadrant => {
         quadrant.addEventListener('click', async () => {
             activeQuadrant = quadrant.getAttribute('data-quadrant');
@@ -156,53 +182,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
             await displayNames(activeQuadrant);
-            nameModal.style.display = 'block';
+            openModal(nameModal, 'name-modal');
         });
     });
 
     nameModalCloseButton.addEventListener('click', () => {
-        nameModal.style.display = 'none';
-        nameInput.value = '';
-        nameInput.blur(); 
-        
-        quadrants.forEach(quadrant => {
-            const type = quadrant.dataset.quadrant;
-            quadrant.style.zIndex = '1';
-            quadrant.style.opacity = '1';
-            
-            if (type === 'top-left') {
-                quadrant.style.transform = 'translate(-5px, -5px)';
-            } else if (type === 'top-right') {
-                quadrant.style.transform = 'translate(5px, -5px)';
-            } else if (type === 'bottom-left') {
-                quadrant.style.transform = 'translate(-5px, 5px)';
-            } else if (type === 'bottom-right') {
-                quadrant.style.transform = 'translate(5px, 5px)';
-            }
-        });
+        history.back();
     });
 
     window.addEventListener('click', (event) => {
         if (event.target === nameModal) {
-            nameModal.style.display = 'none';
-            nameInput.value = '';
-            nameInput.blur(); 
-
-            quadrants.forEach(quadrant => {
-                const type = quadrant.dataset.quadrant;
-                quadrant.style.zIndex = '1';
-                quadrant.style.opacity = '1';
-                
-                if (type === 'top-left') {
-                    quadrant.style.transform = 'translate(-5px, -5px)';
-                } else if (type === 'top-right') {
-                    quadrant.style.transform = 'translate(5px, -5px)';
-                } else if (type === 'bottom-left') {
-                    quadrant.style.transform = 'translate(-5px, 5px)';
-                } else if (type === 'bottom-right') {
-                    quadrant.style.transform = 'translate(5px, 5px)';
-                }
-            });
+            history.back();
         }
     });
 
@@ -305,7 +295,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- FUNCIÓN PARA CAPTURAR Y DESCARGAR LA IMAGEN DEL CÍRCULO ---
-    // Recibe un argumento `bgColor` que puede ser un código de color (e.g., '#000000') o `null` para transparente.
     async function captureAndDownloadNames(bgColor) {
         downloadButton.style.display = 'none';
         loadingSpinner.style.display = 'block';
@@ -319,7 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return names.map(name => `<li style="font-size: 24px; line-height: 1.0; margin: 2px 0; font-weight: 300; color: ${color};">${name}</li>`).join('');
         };
         
-        // Contenedor temporal para los cuadrantes (un cuadrado que luego será un círculo).
         const tempSquare = document.createElement('div');
         tempSquare.style.width = '600px';
         tempSquare.style.height = '600px';
@@ -327,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tempSquare.style.flexWrap = 'wrap';
         tempSquare.style.fontFamily = 'Poppins, sans-serif';
 
-        // Estilos para cada cuadrante.
         const quadrantStyle = 'width: 50%; height: 50%; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;';
 
         tempSquare.innerHTML = `
@@ -345,14 +332,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         
-        // Creamos un contenedor circular que contendrá al cuadrado temporal.
         const tempCircleContainer = document.createElement('div');
         tempCircleContainer.style.width = '600px';
         tempCircleContainer.style.height = '600px';
         tempCircleContainer.style.borderRadius = '50%';
         tempCircleContainer.style.overflow = 'hidden';
         
-        // Establece el color de fondo dinámicamente
         if (bgColor) {
             tempCircleContainer.style.backgroundColor = bgColor;
         } else {
@@ -362,14 +347,12 @@ document.addEventListener('DOMContentLoaded', () => {
         tempCircleContainer.style.position = 'fixed';
         tempCircleContainer.style.top = '-9999px';
 
-        // Agregamos el cuadrado dentro del contenedor circular.
         tempCircleContainer.appendChild(tempSquare);
         document.body.appendChild(tempCircleContainer);
 
-        // html2canvas ahora capturará el contenedor circular.
         html2canvas(tempCircleContainer, {
             scale: 2,
-            backgroundColor: bgColor // Pasa el color de fondo a la configuración de html2canvas
+            backgroundColor: bgColor 
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'cuadrantes.png';
@@ -384,4 +367,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 500);
         });
     }
+
+    // --- NUEVO OYENTE DE EVENTOS PARA EL BOTÓN DE RETROCESO ---
+    window.addEventListener('popstate', (event) => {
+        // Verifica si el estado del historial contiene un ID de modal
+        if (event.state && event.state.modalId) {
+            // El estado contiene el ID de la modal, por lo que la dejamos abierta.
+        } else {
+            // Si no hay un estado con modalId, significa que estamos retrocediendo desde
+            // una modal que estaba abierta.
+            // Primero intentamos cerrar todas las modales.
+            // Para simplificar, cerramos la de nombres y la de círculo, ya que son las que se gestionan con el historial.
+            closeNameModal();
+            closeCircleModal();
+        }
+    });
+
 });
