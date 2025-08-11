@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingSpinner = document.getElementById('loading-spinner');
 
     const downloadButton = document.getElementById('download-button');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
+    const downloadMessage = document.getElementById('download-message');
 
     let activeQuadrant = '';
     let nameToDelete = { quadrant: null, docId: null, name: null };
@@ -31,30 +34,45 @@ document.addEventListener('DOMContentLoaded', () => {
         'bottom-right': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
     
-    // --- NUEVA FUNCIÓN PARA ABRIR CUALQUIER MODAL Y MANEJAR EL HISTORIAL ---
-    function openModal(modalElement, modalId) {
+    // --- FUNCIÓN PARA ABRIR CUALQUIER MODAL CON ANIMACIÓN Y AÑADIR AL HISTORIAL ---
+    function openModal(modalElement, quadrantOrigin = null) {
         modalElement.style.display = 'block';
-        // Agrega una nueva entrada al historial del navegador.
-        // Esto permite cerrar la modal con el botón de retroceso.
-        history.pushState({ modalId: modalId }, '', `#${modalId}`);
+        if (modalElement.id === 'circle-modal') {
+            document.querySelector('.main-container').classList.add('hidden');
+        }
+        if (quadrantOrigin) {
+            const contentElement = modalElement.querySelector('.modal-content');
+            contentElement.classList.add(quadrantOrigin);
+        }
+        setTimeout(() => {
+            modalElement.classList.add('is-active');
+            history.pushState({ modalId: modalElement.id }, '', `#${modalElement.id}`);
+        }, 10);
     }
+    
+    // --- FUNCIÓN PARA CERRAR CUALQUIER MODAL CON ANIMACIÓN ---
+    function closeModal(modalElement) {
+        // Asegúrate de que el modal está activo antes de intentar cerrarlo
+        if (!modalElement.classList.contains('is-active')) {
+            return;
+        }
 
-    // --- FUNCIÓN PARA CERRAR LA MODAL DEL CÍRCULO ---
-    function closeCircleModal() {
-        circleModal.style.display = 'none';
-        newCircleContainer.innerHTML = '';
-        loadingSpinner.style.display = 'none';
-        newCircleContainer.classList.add('hidden');
-        downloadButton.classList.add('hidden');
-        openCircleModalButton.style.display = 'block';
-    }
-
-    // --- FUNCIÓN PARA CERRAR LA MODAL DE NOMBRES ---
-    function closeNameModal() {
-        nameModal.style.display = 'none';
-        nameInput.value = '';
-        nameInput.blur(); 
+        modalElement.classList.remove('is-active');
+        const contentElement = modalElement.querySelector('.modal-content');
         
+        // Esperar a que la transición termine
+        contentElement.addEventListener('transitionend', function handler() {
+            modalElement.style.display = 'none';
+            contentElement.classList.remove('top-left-origin', 'top-right-origin', 'bottom-left-origin', 'bottom-right-origin');
+            contentElement.removeEventListener('transitionend', handler);
+        });
+    }
+
+    // --- Cierre de modales específico ---
+    function closeNameModal() {
+        closeModal(nameModal);
+        
+        // Restaurar la posición de los cuadrantes
         quadrants.forEach(quadrant => {
             const type = quadrant.dataset.quadrant;
             quadrant.style.zIndex = '1';
@@ -72,30 +90,102 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- FUNCIÓN PARA MOSTRAR EL BOTÓN DE DESCARGA ---
-    function showDownloadButton() {
-        downloadButton.classList.remove('hidden');
+    function closeCircleModal() {
+        closeModal(circleModal);
+
+        const contentElement = circleModal.querySelector('.modal-content');
+        contentElement.addEventListener('transitionend', function handler() {
+            newCircleContainer.innerHTML = '';
+            loadingSpinner.style.display = 'none';
+            newCircleContainer.classList.add('hidden');
+            downloadButton.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            progressBar.style.width = '0%';
+            downloadMessage.classList.add('hidden');
+            openCircleModalButton.style.display = 'block';
+            document.querySelector('.main-container').classList.remove('hidden');
+            contentElement.removeEventListener('transitionend', handler);
+        });
+    }
+    
+    function closeConfirmModal() {
+        closeModal(confirmModal);
+        history.back();
     }
 
-    // --- Lógica del nuevo botón y la modal del círculo ---
+    // --- Lógica de eventos para cerrar modales ---
+    nameModalCloseButton.addEventListener('click', () => {
+        history.back();
+    });
+
+    circleModalCloseButton.addEventListener('click', () => {
+        history.back();
+    });
+
+    // Cierra el modal al presionar la tecla 'Esc'
+    window.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            const currentModal = document.querySelector('.modal.is-active');
+            if (currentModal) {
+                history.back();
+            }
+        }
+    });
+
+    // Oyente para el botón de retroceso del navegador
+    window.addEventListener('popstate', (event) => {
+        const currentModal = document.querySelector('.modal.is-active');
+        if (currentModal) {
+            // Verifica si el modal actual es el que está en el estado del historial
+            if (event.state && currentModal.id === event.state.modalId) {
+                // No hacemos nada, el navegador ya se encargó
+            } else {
+                // Si el estado del historial es nulo o diferente, cerramos el modal
+                if (currentModal.id === 'name-modal') {
+                    closeNameModal();
+                } else if (currentModal.id === 'circle-modal') {
+                    closeCircleModal();
+                } else if (currentModal.id === 'confirm-modal') {
+                    closeConfirmModal();
+                }
+            }
+        }
+    });
+
     openCircleModalButton.addEventListener('click', () => {
         openCircleModalButton.style.display = 'none';
         loadingSpinner.style.display = 'block';
         newCircleContainer.classList.add('hidden');
         downloadButton.classList.add('hidden');
         renderNewCircle();
-        openModal(circleModal, 'circle-modal');
+        openModal(circleModal);
     });
 
-    circleModalCloseButton.addEventListener('click', () => {
-        // En lugar de cerrar la modal directamente, navegamos hacia atrás en el historial.
-        // Esto activará el evento 'popstate' y la cerrará.
-        history.back();
-    });
-
-    // --- Lógica del botón de descarga para generar la imagen ---
     downloadButton.addEventListener('click', () => {
-        captureAndDownloadNames('#000000');
+        downloadButton.classList.add('hidden');
+        progressContainer.classList.remove('hidden');
+        downloadMessage.classList.remove('hidden');
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 1;
+            progressBar.style.width = progress + '%';
+            if (progress >= 95) { 
+                clearInterval(interval);
+            }
+        }, 40);
+        
+        captureAndDownloadNames('black').then(() => {
+            clearInterval(interval);
+            progressBar.style.width = '100%';
+            
+            setTimeout(() => {
+                progressContainer.classList.add('hidden');
+                downloadMessage.classList.add('hidden');
+                downloadButton.classList.remove('hidden');
+                progressBar.style.width = '0%';
+            }, 500);
+        });
     });
 
     async function getNamesForQuadrant(quadrantName) {
@@ -148,14 +238,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             loadingSpinner.style.display = 'none';
-            showDownloadButton();
+            downloadButton.classList.remove('hidden');
         }, 150);
     }
 
-    // --- Lógica del círculo principal ---
     quadrants.forEach(quadrant => {
         quadrant.addEventListener('click', async () => {
             activeQuadrant = quadrant.getAttribute('data-quadrant');
+            const quadrantOriginClass = activeQuadrant + '-origin';
+
             quadrants.forEach(q => {
                 const type = q.dataset.quadrant;
                 let transformValue = '';
@@ -182,18 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
             await displayNames(activeQuadrant);
-            openModal(nameModal, 'name-modal');
+            openModal(nameModal, quadrantOriginClass);
         });
-    });
-
-    nameModalCloseButton.addEventListener('click', () => {
-        history.back();
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === nameModal) {
-            history.back();
-        }
     });
 
     nameInput.addEventListener('input', () => {
@@ -229,20 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
     acceptDeleteButton.addEventListener('click', async () => {
         if (nameToDelete.quadrant !== null && nameToDelete.docId !== null) {
             await deleteName(nameToDelete.quadrant, nameToDelete.docId);
-            confirmModal.style.display = 'none';
+            closeConfirmModal();
         }
     });
 
     cancelDeleteButton.addEventListener('click', () => {
-        confirmModal.style.display = 'none';
+        closeConfirmModal();
     });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === confirmModal) {
-            confirmModal.style.display = 'none';
-        }
-    });
-
+    
     async function saveName(quadrant, name) {
         try {
             const namesCollectionRef = window.collection(window.db, quadrant);
@@ -273,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     nameToDelete.quadrant = quadrant;
                     nameToDelete.docId = doc.id;
                     nameToDeleteSpan.textContent = data.nombre;
-                    confirmModal.style.display = 'block';
+                    openModal(confirmModal);
                 });
                 li.appendChild(deleteButton);
                 nameList.appendChild(li);
@@ -288,17 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameDocRef = window.doc(window.db, quadrant, docId);
             await window.deleteDoc(nameDocRef);
             console.log("Nombre eliminado con éxito!");
-            displayNames(quadrant);
+            await displayNames(quadrant);
         } catch (e) {
             console.error("Error al eliminar el nombre: ", e);
         }
     }
     
-    // --- FUNCIÓN PARA CAPTURAR Y DESCARGAR LA IMAGEN DEL CÍRCULO ---
     async function captureAndDownloadNames(bgColor) {
-        downloadButton.style.display = 'none';
-        loadingSpinner.style.display = 'block';
-
         const topLeftNames = await getNamesForQuadrant('top-left');
         const topRightNames = await getNamesForQuadrant('top-right');
         const bottomLeftNames = await getNamesForQuadrant('bottom-left');
@@ -325,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(topRightNames, '#FFFFFF')}</ul>
             </div>
             <div style="${quadrantStyle} background-color: #D5D968;">
-                <ul style="list-style-type: none; padding: 0; margin: 0; color: #171717;">${createNameList(bottomLeftNames, '#171717')}</ul>
+                <ul style="list-style-type: none; padding: 0; margin: 0; color: ${bgColor === 'black' ? '#FFFFFF' : '#171717'};">${createNameList(bottomLeftNames, bgColor === 'black' ? '#FFFFFF' : '#171717')}</ul>
             </div>
             <div style="${quadrantStyle} background-color: #63C963;">
                 <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(bottomRightNames, '#FFFFFF')}</ul>
@@ -350,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tempCircleContainer.appendChild(tempSquare);
         document.body.appendChild(tempCircleContainer);
 
-        html2canvas(tempCircleContainer, {
+        return html2canvas(tempCircleContainer, {
             scale: 2,
             backgroundColor: bgColor 
         }).then(canvas => {
@@ -360,27 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
             link.click();
             
             tempCircleContainer.remove();
-            loadingSpinner.style.display = 'none';
-
-            setTimeout(() => {
-                 downloadButton.style.display = 'block';
-            }, 500);
         });
     }
-
-    // --- NUEVO OYENTE DE EVENTOS PARA EL BOTÓN DE RETROCESO ---
-    window.addEventListener('popstate', (event) => {
-        // Verifica si el estado del historial contiene un ID de modal
-        if (event.state && event.state.modalId) {
-            // El estado contiene el ID de la modal, por lo que la dejamos abierta.
-        } else {
-            // Si no hay un estado con modalId, significa que estamos retrocediendo desde
-            // una modal que estaba abierta.
-            // Primero intentamos cerrar todas las modales.
-            // Para simplificar, cerramos la de nombres y la de círculo, ya que son las que se gestionan con el historial.
-            closeNameModal();
-            closeCircleModal();
-        }
-    });
-
 });
