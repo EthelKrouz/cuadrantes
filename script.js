@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let activeQuadrant = '';
     let nameToDelete = { quadrant: null, docId: null, name: null };
+    
+    // Bandera para controlar la animación
+    let isModalOpen = false;
 
     const quadrantInfo = {
         'top-left': { title: 'Nombres para Cuadrante Azul: <span class="subtitulo-azul">Formales, Precisos, Precavidos, Deliberado, Cuestionado.</span>' },
@@ -34,8 +37,50 @@ document.addEventListener('DOMContentLoaded', () => {
         'bottom-right': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
     
+    // Función para animar un solo cuadrante
+    function animateQuadrant(quadrant, initialTransform, finalTransform, duration = 600, delay = 100) {
+        return new Promise(resolve => {
+            if (isModalOpen) {
+                quadrant.style.transform = initialTransform;
+                quadrant.style.zIndex = '1';
+                setTimeout(resolve, delay);
+                return;
+            }
+
+            quadrant.style.transition = `transform ${duration}ms cubic-bezier(0.68, -0.55, 0.27, 1.55)`;
+            quadrant.style.zIndex = '10';
+            quadrant.style.transform = finalTransform;
+            
+            setTimeout(() => {
+                if (!isModalOpen) {
+                    quadrant.style.transition = `transform ${duration}ms cubic-bezier(0.68, -0.55, 0.27, 1.55)`;
+                    quadrant.style.zIndex = '1';
+                    quadrant.style.transform = initialTransform;
+                }
+                setTimeout(resolve, delay);
+            }, duration);
+        });
+    }
+
+    // Nueva función para el bucle de animación
+    async function startQuadrantAnimation() {
+        while (!isModalOpen) {
+            await animateQuadrant(document.querySelector('.top-left'), 'translate(-5px, -5px)', 'translate(-10px, -10px) scale(1.1)');
+            if (isModalOpen) break;
+            await animateQuadrant(document.querySelector('.top-right'), 'translate(5px, -5px)', 'translate(10px, -10px) scale(1.1)');
+            if (isModalOpen) break;
+            await animateQuadrant(document.querySelector('.bottom-left'), 'translate(-5px, 5px)', 'translate(-10px, 10px) scale(1.1)');
+            if (isModalOpen) break;
+            await animateQuadrant(document.querySelector('.bottom-right'), 'translate(5px, 5px)', 'translate(10px, 10px) scale(1.1)');
+            if (isModalOpen) break;
+            
+            await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña pausa al final del bucle
+        }
+    }
+    
     // --- FUNCIÓN PARA ABRIR CUALQUIER MODAL CON ANIMACIÓN Y AÑADIR AL HISTORIAL ---
     function openModal(modalElement, quadrantOrigin = null) {
+        isModalOpen = true; // Establecer la bandera cuando un modal está abierto
         modalElement.style.display = 'block';
         if (modalElement.id === 'circle-modal') {
             document.querySelector('.main-container').classList.add('hidden');
@@ -52,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- FUNCIÓN PARA CERRAR CUALQUIER MODAL CON ANIMACIÓN ---
     function closeModal(modalElement) {
-        // Asegúrate de que el modal está activo antes de intentar cerrarlo
         if (!modalElement.classList.contains('is-active')) {
             return;
         }
@@ -60,11 +104,16 @@ document.addEventListener('DOMContentLoaded', () => {
         modalElement.classList.remove('is-active');
         const contentElement = modalElement.querySelector('.modal-content');
         
-        // Esperar a que la transición termine
         contentElement.addEventListener('transitionend', function handler() {
             modalElement.style.display = 'none';
             contentElement.classList.remove('top-left-origin', 'top-right-origin', 'bottom-left-origin', 'bottom-right-origin');
             contentElement.removeEventListener('transitionend', handler);
+            
+            // Si no hay ningún modal abierto, reinicia la animación de los cuadrantes
+            if (!document.querySelector('.modal.is-active')) {
+                 isModalOpen = false;
+                 startQuadrantAnimation();
+            }
         });
     }
 
@@ -77,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const type = quadrant.dataset.quadrant;
             quadrant.style.zIndex = '1';
             quadrant.style.opacity = '1';
-            
+            quadrant.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), filter 0.4s ease';
+
             if (type === 'top-left') {
                 quadrant.style.transform = 'translate(-5px, -5px)';
             } else if (type === 'top-right') {
@@ -136,11 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         const currentModal = document.querySelector('.modal.is-active');
         if (currentModal) {
-            // Verifica si el modal actual es el que está en el estado del historial
             if (event.state && currentModal.id === event.state.modalId) {
-                // No hacemos nada, el navegador ya se encargó
             } else {
-                // Si el estado del historial es nulo o diferente, cerramos el modal
                 if (currentModal.id === 'name-modal') {
                     closeNameModal();
                 } else if (currentModal.id === 'circle-modal') {
@@ -247,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             activeQuadrant = quadrant.getAttribute('data-quadrant');
             const quadrantOriginClass = activeQuadrant + '-origin';
 
+            isModalOpen = true; // Pausar la animación cuando se hace clic
             quadrants.forEach(q => {
                 const type = q.dataset.quadrant;
                 let transformValue = '';
@@ -433,4 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tempCircleContainer.remove();
         });
     }
+
+    startQuadrantAnimation(); // Inicia la animación al cargar la página
 });
