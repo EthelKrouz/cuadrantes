@@ -31,7 +31,7 @@ body {
     padding: 8px 15px;
     font-size: 14px;
     color: #3CA086;
-    background-color: transparent;
+    background-color: rgba(11, 22, 24, 0.1);
     border: 0.5px solid #3CA086;
     border-radius: 5px;
     cursor: pointer;
@@ -623,7 +623,7 @@ body {
     font-size: 14px;
     font-weight: 500;
     color: #40A99B;
-    background-color: transparent;
+    background-color: #171717;
     border: 1px solid #40A99B;
     border-radius: 5px;
     cursor: pointer;
@@ -703,16 +703,19 @@ body {
 
 .progress-container {
     width: 100%;
-    height: 100%;
+    height: 30%;
     background-color: #171717;
     border: 1px solid #40A99B;
     border-radius: 5px;
     overflow: hidden;
     position: absolute;
-    top: 0;
+    top: 30%;
     left: 0;
     transition: opacity 0.5s ease;
     opacity: 1;
+    
+    
+    
 }
 
 .progress-container.hidden {
