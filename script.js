@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Referencias a elementos del DOM (sin cambios)
     const quadrants = document.querySelectorAll('.quadrant');
     const nameModal = document.getElementById('name-modal');
     const nameModalCloseButton = nameModal.querySelector('.close-name-modal-button');
@@ -26,9 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let activeQuadrant = '';
     let nameToDelete = { quadrant: null, docId: null, name: null };
-    
-    // Bandera para controlar la animación
     let isModalOpen = false;
+
+    let quadrantData = {};
+    let isDataLoaded = false;
+    let dataLoadingPromise;
 
     const quadrantInfo = {
         'top-left': { title: 'Nombres para Cuadrante Azul: <span class="subtitulo-azul">Formales, Precisos, Precavidos, Deliberado, Cuestionado.</span>' },
@@ -37,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'bottom-right': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
     
-    // Función para animar un solo cuadrante
     function animateQuadrant(quadrant, initialTransform, finalTransform, duration = 600, delay = 100) {
         return new Promise(resolve => {
             if (isModalOpen) {
@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Nueva función para el bucle de animación
     async function startQuadrantAnimation() {
         while (!isModalOpen) {
             await animateQuadrant(document.querySelector('.top-left'), 'translate(-5px, -5px)', 'translate(-10px, -10px) scale(1.1)');
@@ -74,13 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
             await animateQuadrant(document.querySelector('.bottom-right'), 'translate(5px, 5px)', 'translate(10px, 10px) scale(1.1)');
             if (isModalOpen) break;
             
-            await new Promise(resolve => setTimeout(resolve, 500)); // Pequeña pausa al final del bucle
+            await new Promise(resolve => setTimeout(resolve, 500)); 
         }
     }
     
-    // --- FUNCIÓN PARA ABRIR CUALQUIER MODAL CON ANIMACIÓN Y AÑADIR AL HISTORIAL ---
     function openModal(modalElement, quadrantOrigin = null) {
-        isModalOpen = true; // Establecer la bandera cuando un modal está abierto
+        isModalOpen = true; 
         modalElement.style.display = 'block';
         if (modalElement.id === 'circle-modal') {
             document.querySelector('.main-container').classList.add('hidden');
@@ -95,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 10);
     }
     
-    // --- FUNCIÓN PARA CERRAR CUALQUIER MODAL CON ANIMACIÓN ---
     function closeModal(modalElement) {
         if (!modalElement.classList.contains('is-active')) {
             return;
@@ -109,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
             contentElement.classList.remove('top-left-origin', 'top-right-origin', 'bottom-left-origin', 'bottom-right-origin');
             contentElement.removeEventListener('transitionend', handler);
             
-            // Si no hay ningún modal abierto, reinicia la animación de los cuadrantes
             if (!document.querySelector('.modal.is-active')) {
                  isModalOpen = false;
                  startQuadrantAnimation();
@@ -117,11 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Cierre de modales específico ---
     function closeNameModal() {
         closeModal(nameModal);
         
-        // Restaurar la posición de los cuadrantes
         quadrants.forEach(quadrant => {
             const type = quadrant.dataset.quadrant;
             quadrant.style.zIndex = '1';
@@ -163,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         history.back();
     }
 
-    // --- Lógica de eventos para cerrar modales ---
     nameModalCloseButton.addEventListener('click', () => {
         history.back();
     });
@@ -172,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
         history.back();
     });
 
-    // Cierra el modal al presionar la tecla 'Esc'
     window.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             const currentModal = document.querySelector('.modal.is-active');
@@ -182,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Oyente para el botón de retroceso del navegador
     window.addEventListener('popstate', (event) => {
         const currentModal = document.querySelector('.modal.is-active');
         if (currentModal) {
@@ -199,16 +190,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    openCircleModalButton.addEventListener('click', () => {
+    openCircleModalButton.addEventListener('click', async () => {
         openCircleModalButton.style.display = 'none';
+        
         loadingSpinner.style.display = 'block';
         newCircleContainer.classList.add('hidden');
         downloadButton.classList.add('hidden');
-        renderNewCircle();
         openModal(circleModal);
+
+        if (!isDataLoaded) {
+            await dataLoadingPromise;
+        }
+
+        setTimeout(() => {
+            renderNewCircle();
+        }, 2000); 
     });
 
-    downloadButton.addEventListener('click', () => {
+    let isDownloading = false;
+    downloadButton.addEventListener('click', async () => {
+        if (isDownloading) return; 
+
+        isDownloading = true;
         downloadButton.classList.add('hidden');
         progressContainer.classList.remove('hidden');
         downloadMessage.classList.remove('hidden');
@@ -220,9 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (progress >= 95) { 
                 clearInterval(interval);
             }
-        }, 40);
+        }, 20); 
         
-        captureAndDownloadNames('black').then(() => {
+        setTimeout(async () => {
+            await captureAndDownloadNames('black');
             clearInterval(interval);
             progressBar.style.width = '100%';
             
@@ -231,34 +235,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 downloadMessage.classList.add('hidden');
                 downloadButton.classList.remove('hidden');
                 progressBar.style.width = '0%';
+                isDownloading = false; 
             }, 500);
-        });
+        }, 2000); 
     });
 
     async function getNamesForQuadrant(quadrantName) {
-        const names = [];
-        try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            const namesCollectionRef = window.collection(window.db, quadrantName);
-            const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc'));
-            const namesSnapshot = await window.getDocs(q);
-            namesSnapshot.forEach((doc) => {
-                names.push(doc.data().nombre);
-            });
-        } catch (e) {
-            console.error("Error al obtener los nombres: ", e);
-        }
-        return names;
+        return new Promise(async (resolve, reject) => {
+            const names = [];
+            try {
+                const namesCollectionRef = window.collection(window.db, quadrantName);
+                const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc'));
+                const namesSnapshot = await window.getDocs(q);
+                namesSnapshot.forEach((doc) => {
+                    names.push({ id: doc.id, nombre: doc.data().nombre });
+                });
+                // Actualiza la caché con los datos más recientes
+                quadrantData[quadrantName] = names; 
+                resolve(names);
+            } catch (e) {
+                console.error("Error al obtener los nombres: ", e);
+                reject(e);
+            }
+        });
     }
 
-    async function renderNewCircle() {
-        const topLeftNames = await getNamesForQuadrant('top-left');
-        const topRightNames = await getNamesForQuadrant('top-right');
-        const bottomLeftNames = await getNamesForQuadrant('bottom-left');
-        const bottomRightNames = await getNamesForQuadrant('bottom-right');
+    function renderNewCircle() {
+        const topLeftNames = quadrantData['top-left'];
+        const topRightNames = quadrantData['top-right'];
+        const bottomLeftNames = quadrantData['bottom-left'];
+        const bottomRightNames = quadrantData['bottom-right'];
 
         const createNameList = (names) => {
-            return names.map(name => `<li class="new-quadrant-name">${name}</li>`).join('');
+            return names.map(name => `<li class="new-quadrant-name">${name.nombre}</li>`).join('');
         };
 
         const circleHTML = `
@@ -282,11 +291,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         newCircleContainer.innerHTML = circleHTML;
         newCircleContainer.classList.remove('hidden');
-
-        setTimeout(() => {
-            loadingSpinner.style.display = 'none';
-            downloadButton.classList.remove('hidden');
-        }, 150);
+        
+        loadingSpinner.style.display = 'none';
+        downloadButton.classList.remove('hidden');
     }
 
     quadrants.forEach(quadrant => {
@@ -294,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
             activeQuadrant = quadrant.getAttribute('data-quadrant');
             const quadrantOriginClass = activeQuadrant + '-origin';
 
-            isModalOpen = true; // Pausar la animación cuando se hace clic
+            isModalOpen = true; 
             quadrants.forEach(q => {
                 const type = q.dataset.quadrant;
                 let transformValue = '';
@@ -338,6 +345,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (name) {
             await saveName(activeQuadrant, name);
             nameInput.value = '';
+            
+            // --- CÓDIGO CORREGIDO ---
+            // 1. Vuelve a obtener los datos del cuadrante activo para que la caché esté al día
+            await getNamesForQuadrant(activeQuadrant);
+            // 2. Llama a displayNames para que la interfaz se actualice
             await displayNames(activeQuadrant);
 
             saveNameButton.classList.remove('button-ready');
@@ -358,6 +370,13 @@ document.addEventListener('DOMContentLoaded', () => {
     acceptDeleteButton.addEventListener('click', async () => {
         if (nameToDelete.quadrant !== null && nameToDelete.docId !== null) {
             await deleteName(nameToDelete.quadrant, nameToDelete.docId);
+            
+            // --- CÓDIGO CORREGIDO ---
+            // 1. Vuelve a obtener los datos del cuadrante para que la caché esté al día
+            await getNamesForQuadrant(nameToDelete.quadrant);
+            // 2. Llama a displayNames para que la interfaz se actualice
+            await displayNames(nameToDelete.quadrant);
+            
             closeConfirmModal();
         }
     });
@@ -381,12 +400,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function displayNames(quadrant) {
         nameList.innerHTML = '';
-        try {
-            const namesCollectionRef = window.collection(window.db, quadrant);
-            const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc'));
-            const namesSnapshot = await window.getDocs(q);
-            namesSnapshot.forEach((doc) => {
-                const data = doc.data();
+        const namesInCache = quadrantData[quadrant];
+        if (namesInCache) {
+            namesInCache.forEach((data) => {
                 const li = document.createElement('li');
                 li.textContent = data.nombre;
                 const deleteButton = document.createElement('button');
@@ -394,15 +410,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 deleteButton.classList.add('delete-button');
                 deleteButton.addEventListener('click', () => {
                     nameToDelete.quadrant = quadrant;
-                    nameToDelete.docId = doc.id;
+                    nameToDelete.docId = data.id;
                     nameToDeleteSpan.textContent = data.nombre;
                     openModal(confirmModal);
                 });
                 li.appendChild(deleteButton);
                 nameList.appendChild(li);
             });
-        } catch (e) {
-            console.error("Error al obtener los nombres: ", e);
         }
     }
 
@@ -411,62 +425,51 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameDocRef = window.doc(window.db, quadrant, docId);
             await window.deleteDoc(nameDocRef);
             console.log("Nombre eliminado con éxito!");
-            await displayNames(quadrant);
         } catch (e) {
             console.error("Error al eliminar el nombre: ", e);
         }
     }
-    
+
     async function captureAndDownloadNames(bgColor) {
-        const topLeftNames = await getNamesForQuadrant('top-left');
-        const topRightNames = await getNamesForQuadrant('top-right');
-        const bottomLeftNames = await getNamesForQuadrant('bottom-left');
-        const bottomRightNames = await getNamesForQuadrant('bottom-right');
+        const topLeftNames = quadrantData['top-left'];
+        const topRightNames = quadrantData['top-right'];
+        const bottomLeftNames = quadrantData['bottom-left'];
+        const bottomRightNames = quadrantData['bottom-right'];
 
         const createNameList = (names, color) => {
-            return names.map(name => `<li style="font-size: 24px; line-height: 1.0; margin: 2px 0; font-weight: 300; color: ${color};">${name}</li>`).join('');
+            return names.map(name => `<li style="font-size: 24px; line-height: 1.0; margin: 2px 0; font-weight: 300; color: ${color};">${name.nombre}</li>`).join('');
         };
-        
-        const tempSquare = document.createElement('div');
-        tempSquare.style.width = '600px';
-        tempSquare.style.height = '600px';
-        tempSquare.style.display = 'flex';
-        tempSquare.style.flexWrap = 'wrap';
-        tempSquare.style.fontFamily = 'Poppins, sans-serif';
-
-        const quadrantStyle = 'width: 50%; height: 50%; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;';
-
-        tempSquare.innerHTML = `
-            <div style="${quadrantStyle} background-color: #5CA5BB;">
-                <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(topLeftNames, '#FFFFFF')}</ul>
-            </div>
-            <div style="${quadrantStyle} background-color: #C94C69;">
-                <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(topRightNames, '#FFFFFF')}</ul>
-            </div>
-            <div style="${quadrantStyle} background-color: #D5D968;">
-                <ul style="list-style-type: none; padding: 0; margin: 0; color: ${bgColor === 'black' ? '#FFFFFF' : '#171717'};">${createNameList(bottomLeftNames, bgColor === 'black' ? '#FFFFFF' : '#171717')}</ul>
-            </div>
-            <div style="${quadrantStyle} background-color: #63C963;">
-                <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(bottomRightNames, '#FFFFFF')}</ul>
-            </div>
-        `;
         
         const tempCircleContainer = document.createElement('div');
         tempCircleContainer.style.width = '600px';
         tempCircleContainer.style.height = '600px';
         tempCircleContainer.style.borderRadius = '50%';
         tempCircleContainer.style.overflow = 'hidden';
-        
-        if (bgColor) {
-            tempCircleContainer.style.backgroundColor = bgColor;
-        } else {
-            tempCircleContainer.style.backgroundColor = 'transparent';
-        }
-
         tempCircleContainer.style.position = 'fixed';
         tempCircleContainer.style.top = '-9999px';
+        tempCircleContainer.style.backgroundColor = bgColor;
+        tempCircleContainer.style.fontFamily = 'Poppins, sans-serif';
 
-        tempCircleContainer.appendChild(tempSquare);
+        const quadrantStyle = 'width: 50%; height: 50%; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;';
+
+        const quadrantHTML = `
+            <div style="display: flex; flex-wrap: wrap; width: 100%; height: 100%;">
+                <div style="${quadrantStyle} background-color: #5CA5BB;">
+                    <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(topLeftNames, '#FFFFFF')}</ul>
+                </div>
+                <div style="${quadrantStyle} background-color: #C94C69;">
+                    <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(topRightNames, '#FFFFFF')}</ul>
+                </div>
+                <div style="${quadrantStyle} background-color: #D5D968;">
+                    <ul style="list-style-type: none; padding: 0; margin: 0; color: ${bgColor === 'black' ? '#FFFFFF' : '#171717'};">${createNameList(bottomLeftNames, bgColor === 'black' ? '#FFFFFF' : '#171717')}</ul>
+                </div>
+                <div style="${quadrantStyle} background-color: #63C963;">
+                    <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">${createNameList(bottomRightNames, '#FFFFFF')}</ul>
+                </div>
+            </div>
+        `;
+        
+        tempCircleContainer.innerHTML = quadrantHTML;
         document.body.appendChild(tempCircleContainer);
 
         return html2canvas(tempCircleContainer, {
@@ -482,5 +485,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    startQuadrantAnimation(); // Inicia la animación al cargar la página
+    const preloadData = async () => {
+        dataLoadingPromise = Promise.all([
+            getNamesForQuadrant('top-left'),
+            getNamesForQuadrant('top-right'),
+            getNamesForQuadrant('bottom-left'),
+            getNamesForQuadrant('bottom-right')
+        ]);
+
+        await dataLoadingPromise;
+        isDataLoaded = true;
+        console.log("Datos de cuadrantes precargados en la caché.");
+    };
+
+    preloadData();
+    startQuadrantAnimation(); 
 });
