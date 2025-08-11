@@ -115,9 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         newCircleContainer.innerHTML = circleHTML;
-        loadingSpinner.style.display = 'none';
+        
+        // --- CÓDIGO CORREGIDO PARA UNA MEJOR EXPERIENCIA DE CARGA ---
         newCircleContainer.classList.remove('hidden');
-        showDownloadButton();
+
+        setTimeout(() => {
+            loadingSpinner.style.display = 'none';
+            showDownloadButton();
+        }, 150);
+        // --- FIN DEL CÓDIGO CORREGIDO ---
     }
 
     // --- Lógica del círculo principal (sin cambios) ---
