@@ -27,6 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var deleteNotification = document.getElementById('delete-notification-message');
 
     var pageContent = document.querySelector('.page-content');
+    
+    // NUEVAS VARIABLES
+    var headerContent = document.querySelector('.header-content');
 
     var activeQuadrant = '';
     var nameToDelete = { quadrant: null, docId: null, name: null };
@@ -43,11 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'bottom-left': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Comprensivo, Compartido, Alentador, Relajado, Paciente.</span>' },
         'bottom-right': { title: 'Nombres para Cuadrante Amarillo: <span class="subtitulo-amarillo">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
-
-
-
-
-
 
     function showNotification(element, message, isError = false) {
         element.textContent = message;
@@ -110,6 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
         modalElement.classList.add('show');
         pageContent.classList.add('blur-background');
 
+        // Ocultar y desplazar el título, subtítulo y el botón
+        headerContent.classList.add('hidden-transition');
+        openCircleModalButton.classList.add('hidden-transition');
+
         if (modalElement.id === 'circle-modal') {
             document.querySelector('.main-container').classList.add('hidden');
         }
@@ -121,16 +123,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function closeModal(modalElement) {
         modalElement.classList.remove('show');
-        
-        if (!document.querySelector('.modal.show:not(#' + modalElement.id + ')')) {
-            pageContent.classList.remove('blur-background'); 
-            isModalOpen = false;
-            startQuadrantAnimation();
-        }
+    }
+
+    function restorePageElements() {
+        headerContent.classList.remove('hidden-transition');
+        openCircleModalButton.classList.remove('hidden-transition');
+        pageContent.classList.remove('blur-background'); 
+        isModalOpen = false;
+        startQuadrantAnimation();
     }
 
     function closeNameModal() {
         closeModal(nameModal);
+        // Solo restaurar los elementos de la página si no hay otros modales abiertos
+        if (!document.querySelector('.modal.show')) {
+            restorePageElements();
+        }
         
         quadrants.forEach(function(quadrant) {
             var type = quadrant.dataset.quadrant;
@@ -149,11 +157,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    /* --- CAMBIOS EN closeCircleModal --- */
+    
     function closeCircleModal() {
         closeModal(circleModal);
-
+        if (!document.querySelector('.modal.show')) {
+            restorePageElements();
+        }
+        
         setTimeout(function() {
             newCircleContainer.innerHTML = '';
             loadingSpinner.style.display = 'none';
@@ -171,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.main-container').classList.remove('hidden');
         }, 500); // 500ms para que coincida con la duración de la transición
     }
-    /* --- FIN DE CAMBIOS EN closeCircleModal --- */
     
     function closeConfirmModal() {
         closeModal(confirmModal);
@@ -223,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    /* --- CAMBIOS EN openCircleModalButton.addEventListener --- */
     openCircleModalButton.addEventListener('click', async function() {
         // Añade la clase para la transición de ocultar
         openCircleModalButton.classList.add('hidden-button');
@@ -245,7 +253,6 @@ document.addEventListener('DOMContentLoaded', function() {
             renderNewCircle();
         }, 2000); 
     });
-    /* --- FIN DE CAMBIOS EN openCircleModalButton.addEventListener --- */
 
     var isDownloading = false;
     downloadButton.addEventListener('click', async function() {
@@ -353,6 +360,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     q.style.opacity = '0';
                 }
             });
+            
+            // Ocultar y desplazar el título, subtítulo y el botón
+            headerContent.classList.add('hidden-transition');
+            openCircleModalButton.classList.add('hidden-transition');
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
             await displayNames(activeQuadrant);
