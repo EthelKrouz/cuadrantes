@@ -480,6 +480,7 @@ body {
     opacity: 1;
 }
 
+/* FUENTE Y COLOR DE SUBTITULOS DEL MODAL DE CUADRANTES*/
 .subtitulo-rojo {
     font-size: min(3.5vw, 14px); 
     color: #D95477;
@@ -492,12 +493,12 @@ body {
 
 .subtitulo-amarillo {
     font-size: min(3.5vw, 14px);
-    color: #71C963;
+    color: #EBEF7B;
 }
 
 .subtitulo-verde {
     font-size: min(3.5vw, 14px);
-    color: #EBEF7B;
+    color: #71C963;
 }
 
 .name-to-delete-style {
