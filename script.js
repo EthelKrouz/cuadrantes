@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadButton = document.getElementById('download-button');
     const progressContainer = document.getElementById('progress-container');
     const progressBar = document.getElementById('progress-bar');
-    const downloadMessage = document.getElementById('download-message');
 
     const saveNotification = document.getElementById('notification-message');
     const deleteNotification = document.getElementById('delete-notification-message');
@@ -126,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadButton.classList.add('hidden');
             progressContainer.classList.add('hidden');
             progressBar.style.width = '0%';
-            downloadMessage.classList.add('hidden');
             
             document.querySelector('.main-container').classList.remove('hidden');
         }, 500);
@@ -134,7 +132,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function closeConfirmModal() {
         closeModal(confirmModal);
-        // Regresa en el historial del navegador para el modal de nombres
         history.back();
     }
 
@@ -158,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función optimizada para actualizar el DOM
     function updateNameList(quadrant) {
         const currentNames = quadrantData[quadrant];
-        nameList.innerHTML = ''; // Limpiar y volver a renderizar es más simple y suficiente para listas pequeñas
+        nameList.innerHTML = '';
         currentNames.forEach(data => {
             const li = document.createElement('li');
             li.textContent = data.nombre;
@@ -185,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 timestamp: new Date()
             });
             console.log("Nombre guardado en Firestore!");
-            // Actualiza la caché local
             quadrantData[quadrant].push({ id: docRef.id, nombre: name });
         } catch (e) {
             console.error("Error al guardar el nombre: ", e);
@@ -198,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const nameDocRef = window.doc(window.db, quadrant, docId);
             await window.deleteDoc(nameDocRef);
             console.log("Nombre eliminado con éxito!");
-            // Actualiza la caché local
             quadrantData[quadrant] = quadrantData[quadrant].filter(item => item.id !== docId);
         } catch (e) {
             console.error("Error al eliminar el nombre: ", e);
@@ -275,12 +270,10 @@ document.addEventListener('DOMContentLoaded', function() {
         quadrant.addEventListener('click', async () => {
             activeQuadrant = quadrant.dataset.quadrant;
             
-            // Si los datos ya están en caché, no se hace la petición de nuevo
             if (!quadrantData[activeQuadrant] || quadrantData[activeQuadrant].length === 0) {
                  await getNamesForQuadrant(activeQuadrant);
             }
             
-            // Animación de cuadrantes
             quadrants.forEach(q => {
                 const type = q.dataset.quadrant;
                 const transformValue = type === 'top-left' ? 'translate(-200px, -250px) scale(3)' :
@@ -300,7 +293,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Ocultar y desplazar el título, subtítulo y el botón
             headerContent.classList.add('hidden-transition');
             openCircleModalButton.classList.add('hidden-transition');
 
@@ -359,7 +351,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cancelDeleteButton.addEventListener('click', closeConfirmModal);
 
-    // Eventos de los modales
     circleModalCloseButton.addEventListener('click', () => {
         if (isLoading) return; 
         history.back();
@@ -393,29 +384,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     openCircleModalButton.addEventListener('click', async () => {
-        // [MODIFICACIÓN CLAVE]: Hemos reordenado esta función para que el spinner
-        // se muestre ANTES de empezar a cargar los datos.
-
-        // 1. Ocultamos los elementos de la página principal y abrimos el modal
         openCircleModalButton.classList.add('hidden-transition');
         headerContent.classList.add('hidden-transition');
         openModal(circleModal);
 
-        // 2. Preparamos el modal para mostrar el spinner
         isLoading = true; 
-        loadingSpinner.style.display = 'block'; // Mostramos el spinner
+        loadingSpinner.style.display = 'block';
         newCircleContainer.innerHTML = '';
-        newCircleContainer.classList.add('hidden'); // Ocultamos el contenedor del círculo
+        newCircleContainer.classList.add('hidden');
         downloadButton.classList.add('hidden');
         circleModalCloseButton.classList.add('hidden');
 
-        // 3. Esperamos a que los datos se carguen.
-        // La ejecución se pausa aquí hasta que la promesa 'dataLoadingPromise' se resuelve.
         await dataLoadingPromise;
 
-        // 4. Una vez que los datos están listos, ocultamos el spinner y renderizamos el contenido
-        loadingSpinner.style.display = 'none'; // Ocultamos el spinner
-        renderNewCircle(); // Esta función muestra el nuevo círculo con los datos
+        loadingSpinner.style.display = 'none';
+        renderNewCircle();
 
         isLoading = false; 
     });
@@ -426,7 +409,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         downloadButton.classList.add('hidden');
         progressContainer.classList.remove('hidden');
-        downloadMessage.classList.remove('hidden');
 
         let progress = 0;
         const interval = setInterval(() => {
@@ -442,7 +424,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             setTimeout(() => {
                 progressContainer.classList.add('hidden');
-                downloadMessage.classList.add('hidden');
                 downloadButton.classList.remove('hidden');
                 progressBar.style.width = '0%';
                 isDownloading = false;
@@ -450,7 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000); 
     });
 
-    // Carga inicial de datos
     const preloadData = async () => {
         dataLoadingPromise = Promise.all([
             getNamesForQuadrant('top-left'),
