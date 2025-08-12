@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var progressBar = document.getElementById('progress-bar');
     var downloadMessage = document.getElementById('download-message');
 
+    var saveNotification = document.getElementById('notification-message');
+    var deleteNotification = document.getElementById('delete-notification-message');
+
+    var pageContent = document.querySelector('.page-content');
+
     var activeQuadrant = '';
     var nameToDelete = { quadrant: null, docId: null, name: null };
     var isModalOpen = false;
@@ -33,35 +38,55 @@ document.addEventListener('DOMContentLoaded', function() {
     var dataLoadingPromise;
 
     var quadrantInfo = {
-    'top-left': { title: 'Nombres para Cuadrante Azul: <span class="subtitulo-azul">Formales, Precisos, Precavidos, Deliberado, Cuestionado.</span>' },
-    'top-right': { title: 'Nombres para Cuadrante Rojo: <span class="subtitulo-rojo">Propositivo, Competitivo, Demandante, Determinado.</span>' },
-    // AQUI INVERTIR
-    'bottom-left': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' },
-    'bottom-right': { title: 'Nombres para Cuadrante Amarillo: <span class="subtitulo-amarillo">Comprensivo, Compartido, Alentador, Relajado, Paciente.</span>' }
-};
+        'top-left': { title: 'Nombres para Cuadrante Azul: <span class="subtitulo-azul">Formales, Precisos, Precavidos, Deliberado, Cuestionado.</span>' },
+        'top-right': { title: 'Nombres para Cuadrante Rojo: <span class="subtitulo-rojo">Propositivo, Competitivo, Demandante, Determinado.</span>' },
+        'bottom-left': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Comprensivo, Compartido, Alentador, Relajado, Paciente.</span>' },
+        'bottom-right': { title: 'Nombres para Cuadrante Amarillo: <span class="subtitulo-amarillo">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
+    };
 
+
+
+
+
+
+    function showNotification(element, message, isError = false) {
+        element.textContent = message;
+        element.classList.remove('hidden');
+        if (isError) {
+            element.classList.add('error');
+        } else {
+            element.classList.remove('error');
+        }
+        setTimeout(() => {
+            element.classList.add('visible');
+        }, 10);
+
+        setTimeout(() => {
+            element.classList.remove('visible');
+            setTimeout(() => {
+                element.classList.add('hidden');
+            }, 500);
+        }, 3000);
+    }
     
-    function animateQuadrant(quadrant, initialTransform, finalTransform, duration, delay) {
-        return new Promise(function(resolve) {
-            if (isModalOpen) {
-                quadrant.style.transform = initialTransform;
-                quadrant.style.zIndex = '1';
-                setTimeout(resolve, delay);
-                return;
-            }
+    function showNameModalNotification(message, isError = false) {
+        showNotification(saveNotification, message, isError);
+    }
 
-            quadrant.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+    function animateQuadrant(quadrant, initialTransform, finalTransform) {
+        return new Promise(function(resolve) {
+            quadrant.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
             quadrant.style.zIndex = '10';
             quadrant.style.transform = finalTransform;
             
             setTimeout(function() {
                 if (!isModalOpen) {
-                    quadrant.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+                    quadrant.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
                     quadrant.style.zIndex = '1';
                     quadrant.style.transform = initialTransform;
                 }
-                setTimeout(resolve, delay);
-            }, duration);
+                setTimeout(resolve, 600);
+            }, 600);
         });
     }
 
@@ -80,40 +105,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    function openModal(modalElement, quadrantOrigin) {
+    /* --- CAMBIOS EN LAS FUNCIONES openModal y closeModal --- */
+    function openModal(modalElement) {
         isModalOpen = true; 
-        modalElement.style.display = 'block';
+        modalElement.classList.add('show');
+        pageContent.classList.add('blur-background');
+
         if (modalElement.id === 'circle-modal') {
             document.querySelector('.main-container').classList.add('hidden');
         }
-        if (quadrantOrigin) {
-            var contentElement = modalElement.querySelector('.modal-content');
-            contentElement.classList.add(quadrantOrigin);
-        }
+        
         setTimeout(function() {
-            modalElement.classList.add('is-active');
             history.pushState({ modalId: modalElement.id }, '', '#' + modalElement.id);
         }, 10);
     }
     
     function closeModal(modalElement) {
-        if (!modalElement.classList.contains('is-active')) {
-            return;
-        }
-
-        modalElement.classList.remove('is-active');
-        var contentElement = modalElement.querySelector('.modal-content');
+        modalElement.classList.remove('show');
         
-        contentElement.addEventListener('transitionend', function handler() {
-            modalElement.style.display = 'none';
-            contentElement.classList.remove('top-left-origin', 'top-right-origin', 'bottom-left-origin', 'bottom-right-origin');
-            contentElement.removeEventListener('transitionend', handler);
-            
-            if (!document.querySelector('.modal.is-active')) {
-                 isModalOpen = false;
-                 startQuadrantAnimation();
-            }
-        });
+        if (!document.querySelector('.modal.show:not(#' + modalElement.id + ')')) {
+            pageContent.classList.remove('blur-background'); 
+            isModalOpen = false;
+            startQuadrantAnimation();
+        }
     }
 
     function closeNameModal() {
@@ -140,8 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeCircleModal() {
         closeModal(circleModal);
 
-        var contentElement = circleModal.querySelector('.modal-content');
-        contentElement.addEventListener('transitionend', function handler() {
+        setTimeout(function() {
             newCircleContainer.innerHTML = '';
             loadingSpinner.style.display = 'none';
             newCircleContainer.classList.add('hidden');
@@ -151,14 +164,14 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadMessage.classList.add('hidden');
             openCircleModalButton.style.display = 'block';
             document.querySelector('.main-container').classList.remove('hidden');
-            contentElement.removeEventListener('transitionend', handler);
-        });
+        }, 500); // 500ms para que coincida con la duración de la transición
     }
     
     function closeConfirmModal() {
         closeModal(confirmModal);
         history.back();
     }
+    /* --- FIN DE CAMBIOS --- */
 
     circleModalCloseButton.addEventListener('click', function() {
         if (isLoading) return; 
@@ -171,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
-            var currentModal = document.querySelector('.modal.is-active');
+            var currentModal = document.querySelector('.modal.show');
             if (currentModal && currentModal.id === 'circle-modal' && isLoading) {
                 return;
             }
@@ -182,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     window.addEventListener('popstate', function(event) {
-        var currentModal = document.querySelector('.modal.is-active');
+        var currentModal = document.querySelector('.modal.show');
         if (currentModal) {
             if (currentModal.id === 'circle-modal' && isLoading) {
                 if (event.state && currentModal.id === event.state.modalId) {
@@ -305,13 +318,8 @@ document.addEventListener('DOMContentLoaded', function() {
     quadrants.forEach(function(quadrant) {
         quadrant.addEventListener('click', async function() {
             activeQuadrant = quadrant.getAttribute('data-quadrant');
-            var quadrantOriginClass = activeQuadrant + '-origin';
             
-            // --- CÓDIGO MODIFICADO ---
-            // Asegúrate de que los nombres del cuadrante se carguen antes de mostrarlos.
-            // Esto evitará que la lista aparezca vacía si el usuario hace clic inmediatamente.
             await getNamesForQuadrant(activeQuadrant); 
-            // ------------------------
 
             isModalOpen = true; 
             quadrants.forEach(function(q) {
@@ -340,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
             await displayNames(activeQuadrant);
-            openModal(nameModal, quadrantOriginClass);
+            openModal(nameModal);
         });
     });
 
@@ -355,18 +363,27 @@ document.addEventListener('DOMContentLoaded', function() {
     saveNameButton.addEventListener('click', async function() {
         var name = nameInput.value.trim();
         if (name) {
-            await saveName(activeQuadrant, name);
+            saveNameButton.classList.add('saving');
+            saveNameButton.disabled = true;
+
+            try {
+                await saveName(activeQuadrant, name);
+                showNameModalNotification("¡Nombre guardado con éxito!");
+            } catch (error) {
+                showNameModalNotification("Error al guardar. Inténtalo de nuevo.", true);
+                console.error("Error al guardar el nombre:", error);
+            }
+
             nameInput.value = '';
             
             await getNamesForQuadrant(activeQuadrant);
             await displayNames(activeQuadrant);
 
-            saveNameButton.classList.remove('button-ready');
-            saveNameButton.classList.add('button-active-effect');
-            
             setTimeout(function() {
-                saveNameButton.classList.remove('button-active-effect');
-            }, 1200);
+                saveNameButton.classList.remove('saving');
+                saveNameButton.classList.remove('button-ready');
+                saveNameButton.disabled = false;
+            }, 700);
         }
     });
 
@@ -378,12 +395,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     acceptDeleteButton.addEventListener('click', async function() {
         if (nameToDelete.quadrant !== null && nameToDelete.docId !== null) {
-            await deleteName(nameToDelete.quadrant, nameToDelete.docId);
-            
-            await getNamesForQuadrant(nameToDelete.quadrant);
-            await displayNames(nameToDelete.quadrant);
-            
-            closeConfirmModal();
+            try {
+                await deleteName(nameToDelete.quadrant, nameToDelete.docId);
+                
+                showNameModalNotification("El nombre ha sido eliminado.");
+                
+                await getNamesForQuadrant(nameToDelete.quadrant);
+                await displayNames(nameToDelete.quadrant);
+
+                closeConfirmModal();
+            } catch (error) {
+                showNotification(deleteNotification, "Error al eliminar. Inténtalo de nuevo.", true);
+                console.error("Error al eliminar el nombre:", error);
+            }
         }
     });
 
@@ -401,6 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Nombre guardado en Firestore!");
         } catch (e) {
             console.error("Error al guardar el nombre: ", e);
+            throw e;
         }
     }
 
@@ -433,6 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Nombre eliminado con éxito!");
         } catch (e) {
             console.error("Error al eliminar el nombre: ", e);
+            throw e;
         }
     }
 
@@ -449,7 +475,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         var tempCircleContainer = document.createElement('div');
-        // Usamos min() para que el tamaño se adapte al viewport o 600px, lo que sea más pequeño
         tempCircleContainer.style.width = 'min(100vw, 600px)';
         tempCircleContainer.style.height = 'min(100vw, 600px)';
         tempCircleContainer.style.borderRadius = '50%';
@@ -459,7 +484,6 @@ document.addEventListener('DOMContentLoaded', function() {
         tempCircleContainer.style.backgroundColor = bgColor;
         tempCircleContainer.style.fontFamily = 'Poppins, sans-serif';
 
-        // Reducimos el padding para dar más espacio a los nombres
         var quadrantStyle = 'width: 50%; height: 50%; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 10px; box-sizing: border-box; text-align: center;';
 
         var quadrantHTML = ' <div style="display: flex; flex-wrap: wrap; width: 100%; height: 100%;"> <div style="' + quadrantStyle + ' background-color: #5CA5BB;"> <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">' + createNameList(topLeftNames, '#FFFFFF') + '</ul> </div> <div style="' + quadrantStyle + ' background-color: #C94C69;"> <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">' + createNameList(topRightNames, '#FFFFFF') + '</ul> </div> <div style="' + quadrantStyle + ' background-color: #63C963;"> <ul style="list-style-type: none; padding: 0; margin: 0; color: ' + (bgColor === 'black' ? '#FFFFFF' : '#171717') + ';">' + createNameList(bottomLeftNames, bgColor === 'black' ? '#FFFFFF' : '#171717') + '</ul> </div> <div style="' + quadrantStyle + ' background-color: #D5D968;"> <ul style="list-style-type: none; padding: 0; margin: 0; color: #FFFFFF;">' + createNameList(bottomRightNames, '#FFFFFF') + '</ul> </div> </div> ';
@@ -468,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(tempCircleContainer);
 
         return html2canvas(tempCircleContainer, {
-            scale: 2,
+            scale: 8,
             backgroundColor: bgColor 
         }).then(function(canvas) {
             var link = document.createElement('a');
