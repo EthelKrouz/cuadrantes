@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    /* --- CAMBIOS EN LAS FUNCIONES openModal y closeModal --- */
     function openModal(modalElement) {
         isModalOpen = true; 
         modalElement.classList.add('show');
@@ -151,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    /* --- CAMBIOS EN closeCircleModal --- */
     function closeCircleModal() {
         closeModal(circleModal);
 
@@ -162,16 +162,21 @@ document.addEventListener('DOMContentLoaded', function() {
             progressContainer.classList.add('hidden');
             progressBar.style.width = '0%';
             downloadMessage.classList.add('hidden');
-            openCircleModalButton.style.display = 'block';
+            
+            // Remueve la clase para la transición de aparición
+            openCircleModalButton.classList.remove('hidden-button');
+            // Restablece la transformación para que la transición funcione correctamente
+            openCircleModalButton.style.transform = ''; 
+            
             document.querySelector('.main-container').classList.remove('hidden');
         }, 500); // 500ms para que coincida con la duración de la transición
     }
+    /* --- FIN DE CAMBIOS EN closeCircleModal --- */
     
     function closeConfirmModal() {
         closeModal(confirmModal);
         history.back();
     }
-    /* --- FIN DE CAMBIOS --- */
 
     circleModalCloseButton.addEventListener('click', function() {
         if (isLoading) return; 
@@ -218,8 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    /* --- CAMBIOS EN openCircleModalButton.addEventListener --- */
     openCircleModalButton.addEventListener('click', async function() {
-        openCircleModalButton.style.display = 'none';
+        // Añade la clase para la transición de ocultar
+        openCircleModalButton.classList.add('hidden-button');
         
         isLoading = true; 
         loadingSpinner.style.display = 'block';
@@ -238,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
             renderNewCircle();
         }, 2000); 
     });
+    /* --- FIN DE CAMBIOS EN openCircleModalButton.addEventListener --- */
 
     var isDownloading = false;
     downloadButton.addEventListener('click', async function() {
