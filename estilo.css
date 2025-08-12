@@ -23,7 +23,6 @@ body {
     filter: blur(5px);
 }
 
-/* Modificado para que el header se quede fijo en la parte superior */
 .main-header {
     position: fixed;
     top: 15px;
@@ -58,7 +57,6 @@ body {
 }
 
 .main-container {
-    /* Mantenemos el centrado del círculo y los labels */
     position: absolute;
     width: 100%;
     height: 100vh;
@@ -71,7 +69,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Modificado para que el botón se quede fijo en la parte superior */
+/* --- ESTILOS DEL BOTÓN CON TRANSICIÓN --- */
 .open-button {
     position: fixed;
     top: 20px;
@@ -84,8 +82,18 @@ body {
     border-radius: 5px;
     cursor: pointer;
     z-index: 1000;
-    transition: background-color 0.3s ease;
+    /* Añade la transición para el deslizamiento (transform) */
+    transition: background-color 0.3s ease, opacity 0.5s ease, visibility 0.5s ease, transform 0.5s ease-out;
 }
+
+.open-button.hidden-button {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    /* Desliza el botón hacia arriba */
+    transform: translateY(-30px);
+}
+/* --- FIN DE ESTILOS DEL BOTÓN --- */
 
 .label {
     font-family: 'Poppins', sans-serif;
@@ -410,7 +418,6 @@ body {
     background-color: #71c963;
 }
 
-/* --- Cambios para el efecto de rebote --- */
 .modal {
     display: flex;
     justify-content: center;
@@ -456,7 +463,6 @@ body {
     max-height: 100vh;
     overflow-y: auto;
     
-    /* Efecto de rebote */
     transform: scale(0.7);
     transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
     opacity: 0;
@@ -466,7 +472,6 @@ body {
     transform: scale(1);
     opacity: 1;
 }
-/* --- Fin de cambios --- */
 
 .modal-content h2 {
     margin-top: 0;
