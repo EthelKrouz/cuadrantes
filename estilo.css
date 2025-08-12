@@ -451,7 +451,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8px);
+   
     padding: 5vmin 10px;
     border: 0.6px solid #48706E;
     width: 90%;
