@@ -88,13 +88,13 @@ body {
 .label-bottom-left {
     bottom: 15%;
     left: 5vmin;
-    color: #F2F5BC;
+    color: #A9E1A1;
 }
 
 .label-bottom-right {
     bottom: 15%;
     right: 5vmin;
-    color: #A9E1A1;
+    color: #F2F5BC;
 }
 
 @media (min-width: 769px) {
@@ -199,18 +199,17 @@ body {
 .bottom-left {
     bottom: 0;
     left: 0;
-    background-color: #EBEF7B;
+    background-color: #71C963;
     border-top-right-radius: 15px;
     transform: translate(-5px, 5px);
 }
 .bottom-right {
     bottom: 0;
     right: 0;
-    background-color: #71C963;
+    background-color: #EBEF7B;
     border-top-left-radius: 15px;
     transform: translate(5px, 5px);
 }
-
 
 .top-left-label {
     top: 15%;
@@ -493,12 +492,12 @@ body {
 
 .subtitulo-amarillo {
     font-size: min(3.5vw, 14px);
-    color: #EBEF7B;
+    color: #71C963;
 }
 
 .subtitulo-verde {
     font-size: min(3.5vw, 14px);
-    color: #71C963;
+    color: #EBEF7B;
 }
 
 .name-to-delete-style {
@@ -645,14 +644,14 @@ body {
 .new-quadrant.bottom-left {
     bottom: 0;
     left: 0;
-    background-color: #D5D968;
+    background-color: #63C963;
     color: #FFFFFF;
 }
 
 .new-quadrant.bottom-right {
     bottom: 0;
     right: 0;
-    background-color: #63C963;
+    background-color: #D5D968;
     color: #FFFFFF;
 }
 
