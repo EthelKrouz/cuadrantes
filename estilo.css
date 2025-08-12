@@ -2,14 +2,14 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh; /* Se asegura de que la página ocupe exactamente la altura de la ventana */
+    overflow: hidden; /* **Este es el cambio clave para eliminar el scroll vertical** */
     background-color: #171717;
     margin: 0;
     font-family: 'Poppins', sans-serif;
     outline: none !important;
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden;
 }
 
 .page-content {
@@ -64,14 +64,13 @@ body {
 .main-container {
     position: absolute;
     width: 100%;
-    height: 100vh;
+    height: 100%; /* Ajustado para que ocupe el 100% del padre (`.page-content`) */
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 47%;
+    top: 50%; /* Se usa 50% para un centrado perfecto */
     left: 50%;
     transform: translate(-50%, -50%);
-    overflow-x: hidden;
 }
 
 .open-button {
