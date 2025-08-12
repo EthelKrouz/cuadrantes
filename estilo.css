@@ -135,7 +135,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
     padding: 1vmin 12px;
     text-align: center;
     opacity: 0.9;
