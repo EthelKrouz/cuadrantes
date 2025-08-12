@@ -226,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingSpinner.style.display = 'none';
         downloadButton.classList.remove('hidden');
         circleModalCloseButton.classList.remove('hidden');
-        isLoading = false; 
     }
 
     async function captureAndDownloadNames(bgColor) {
@@ -394,16 +393,31 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     openCircleModalButton.addEventListener('click', async () => {
-        openCircleModalButton.classList.add('hidden-button');
-        isLoading = true; 
-        loadingSpinner.style.display = 'block';
-        newCircleContainer.classList.add('hidden');
-        downloadButton.classList.add('hidden');
-        circleModalCloseButton.classList.add('hidden');
+        // [MODIFICACIÓN CLAVE]: Hemos reordenado esta función para que el spinner
+        // se muestre ANTES de empezar a cargar los datos.
+
+        // 1. Ocultamos los elementos de la página principal y abrimos el modal
+        openCircleModalButton.classList.add('hidden-transition');
+        headerContent.classList.add('hidden-transition');
         openModal(circleModal);
 
-        if (!isDataLoaded) await dataLoadingPromise;
-        renderNewCircle();
+        // 2. Preparamos el modal para mostrar el spinner
+        isLoading = true; 
+        loadingSpinner.style.display = 'block'; // Mostramos el spinner
+        newCircleContainer.innerHTML = '';
+        newCircleContainer.classList.add('hidden'); // Ocultamos el contenedor del círculo
+        downloadButton.classList.add('hidden');
+        circleModalCloseButton.classList.add('hidden');
+
+        // 3. Esperamos a que los datos se carguen.
+        // La ejecución se pausa aquí hasta que la promesa 'dataLoadingPromise' se resuelve.
+        await dataLoadingPromise;
+
+        // 4. Una vez que los datos están listos, ocultamos el spinner y renderizamos el contenido
+        loadingSpinner.style.display = 'none'; // Ocultamos el spinner
+        renderNewCircle(); // Esta función muestra el nuevo círculo con los datos
+
+        isLoading = false; 
     });
 
     downloadButton.addEventListener('click', async () => {
