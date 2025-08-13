@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Variables del DOM - Se obtienen una sola vez
     const quadrants = document.querySelectorAll('.quadrant');
     const nameModal = document.getElementById('name-modal');
     const nameModalCloseButton = nameModal.querySelector('.close-name-modal-button');
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTitle = document.getElementById('modal-title');
     
     const confirmModal = document.getElementById('confirm-modal');
-    // Actualiza los selectores a las nuevas clases de los botones
     const cancelDeleteButton = confirmModal.querySelector('.cancel-button'); 
     const acceptDeleteButton = confirmModal.querySelector('.accept-button');
     const nameToDeleteSpan = document.getElementById('name-to-delete');
@@ -25,24 +23,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressBar = document.getElementById('progress-bar');
 
     const saveNotification = document.getElementById('notification-message');
-    // const deleteNotification = document.getElementById('delete-notification-message'); // Variable eliminada
 
     const pageContent = document.querySelector('.page-content');
     const headerContent = document.querySelector('.header-content');
     
-    // Novedad: Variables del DOM para las nuevas barras de color
     const nameModalColorBar = document.getElementById('name-modal-color-bar');
     const confirmModalColorBar = document.getElementById('confirm-modal-color-bar');
 
-    // Variables de estado
     let activeQuadrant = '';
     let nameToDelete = { quadrant: null, docId: null, name: null };
     let isModalOpen = false;
     let isLoading = false;
     let isDownloading = false;
-    let notificationTimeout; // Variable para el temporizador de la notificación
+    let notificationTimeout;
 
-    // Cache de datos
     const quadrantData = {
         'top-left': [],
         'top-right': [],
@@ -59,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'bottom-right': { title: 'Nombres para Cuadrante Amarillo: <span class="subtitulo-amarillo">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
     
-    // Novedad: Objeto para mapear el cuadrante a la clase de color
     const colorClasses = {
         'top-left': 'color-top-left',
         'top-right': 'color-top-right',
@@ -67,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'bottom-right': 'color-bottom-right'
     };
 
-    // Funciones de utilidad
     function showNotification(element, message, isError = false) {
         clearTimeout(notificationTimeout);
         
@@ -87,14 +79,12 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification(saveNotification, message, isError);
     }
     
-    // Función para ocultar explícitamente la notificación
     function hideNotification() {
         const notification = document.getElementById('notification-message');
         notification.classList.remove('visible');
         clearTimeout(notificationTimeout);
         setTimeout(() => { notification.classList.add('hidden'); }, 500);
     }
-
 
     function openModal(modalElement) {
         isModalOpen = true; 
@@ -128,10 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal(nameModal);
         restorePageElements();
         
-        // Cierra la notificación al cerrar el modal
         hideNotification();
         
-        // Novedad: Reinicia la barra de color
         nameModalColorBar.className = 'modal-color-bar';
         
         quadrants.forEach(q => {
@@ -164,20 +152,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function closeConfirmModal() {
         closeModal(confirmModal);
-        // Novedad: Reinicia la barra de color
         confirmModalColorBar.className = 'modal-color-bar';
         history.back();
     }
 
-    // Funciones de Firebase y manejo de datos
     async function getNamesForQuadrant(quadrantName) {
         const names = [];
         try {
             const namesCollectionRef = window.collection(window.db, quadrantName);
-            const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc'));
+            const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc')); 
             const namesSnapshot = await window.getDocs(q);
             namesSnapshot.forEach(doc => {
-                names.push({ id: doc.id, nombre: doc.data().nombre });
+                const data = doc.data();
+                const date = data.timestamp ? data.timestamp.toDate() : new Date();
+                names.push({ 
+                    id: doc.id, 
+                    nombre: data.nombre,
+                    timestamp: date
+                });
             });
             quadrantData[quadrantName] = names;
         } catch (e) {
@@ -186,15 +178,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Función optimizada para actualizar el DOM
     function updateNameList(quadrant) {
         const currentNames = quadrantData[quadrant];
         nameList.innerHTML = '';
         currentNames.forEach(data => {
             const li = document.createElement('li');
-            li.textContent = data.nombre;
+
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = data.nombre;
+            
+            const rightSideContainer = document.createElement('div');
+            rightSideContainer.style.display = 'flex';
+            rightSideContainer.style.alignItems = 'center';
+
+            const dateAdded = data.timestamp.toLocaleDateString('es-ES', {
+                year: '2-digit',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            const dateSpan = document.createElement('span');
+            dateSpan.textContent = ` ${dateAdded}`;
+            dateSpan.style.fontSize = 'min(3vw, 12px)';
+            dateSpan.style.color = '#a0a0a0'; 
+            dateSpan.style.marginRight = '5px';
+            
             const deleteButton = document.createElement('button');
-            deleteButton.textContent = '×';
+            const icon = document.createElement('i');
+            icon.classList.add('far', 'fa-trash-alt');
+            deleteButton.appendChild(icon);
             deleteButton.classList.add('delete-button');
             deleteButton.addEventListener('click', () => {
                 nameToDelete.quadrant = quadrant;
@@ -202,12 +214,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 nameToDelete.name = data.nombre;
                 nameToDeleteSpan.textContent = data.nombre;
                 
-                // Novedad: Aplica la clase de color al modal de confirmación
                 confirmModalColorBar.className = `modal-color-bar ${colorClasses[quadrant]}`;
                 
                 openModal(confirmModal);
             });
-            li.appendChild(deleteButton);
+            
+            rightSideContainer.appendChild(dateSpan);
+            rightSideContainer.appendChild(deleteButton);
+            
+            li.appendChild(nameSpan);
+            li.appendChild(rightSideContainer);
+
             nameList.appendChild(li);
         });
     }
@@ -220,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 timestamp: new Date()
             });
             console.log("Nombre guardado en Firestore!");
-            quadrantData[quadrant].push({ id: docRef.id, nombre: name });
+            quadrantData[quadrant].push({ id: docRef.id, nombre: name, timestamp: new Date() });
         } catch (e) {
             console.error("Error al guardar el nombre: ", e);
             throw e;
@@ -239,7 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Funciones de renderizado para los modals
     function renderNewCircle() {
         const createNameList = (names) => names.map(name => `<li class="new-quadrant-name">${name.nombre}</li>`).join('');
         
@@ -303,7 +319,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Manejadores de eventos
     quadrants.forEach(quadrant => {
         quadrant.addEventListener('click', async () => {
             activeQuadrant = quadrant.dataset.quadrant;
@@ -334,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function() {
             headerContent.classList.add('hidden-transition');
             openCircleModalButton.classList.add('hidden-transition');
             
-            // Novedad: Aplica la clase de color a la barra del modal de nombres
             nameModalColorBar.className = `modal-color-bar ${colorClasses[activeQuadrant]}`;
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
