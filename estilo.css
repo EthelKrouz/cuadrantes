@@ -353,7 +353,6 @@ body {
 }
 
 
-
 .top-left {
     top: 0;
     left: 0;
@@ -472,7 +471,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.1);
-    padding: 15px 10px 5vmin 10px; /* Se ajusta el padding superior */
+    padding: 15px 10px 5vmin 10px;
     border: 0.6px solid #69706F;
     width: 90%;
     max-width: min(90vw, 400px);
@@ -489,7 +488,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Estilos para la barra de color en la parte superior del modal */
 .modal-color-bar {
     width: 100%;
     height: 4px;
@@ -500,7 +498,6 @@ body {
     border-top-right-radius: 10px;
 }
 
-/* Clases de color para cada cuadrante */
 .color-top-left {
     background-color: #5CA5BB;
 }
@@ -531,8 +528,7 @@ body {
 
 .close-button {
     color: #fff;
-    font-size: 7.5vw; /* aprox. igual a 28px en una pantalla de 375px de ancho */
-    
+    font-size: 7.5vw;
     position: absolute;
     top: -6px;
     right: 6px;
@@ -658,16 +654,20 @@ body {
     border-bottom: none;
 }
 
+/* Estilo del botón de borrado actualizado */
 .delete-button {
     background: none;
     border: none;
     color: #D74951;
     cursor: pointer;
-    font-size: 16px;
-    padding: 0;
+    font-size: min(3.6vw, 14px);
+    padding: 5px;
     margin-left: 10px;
     opacity: 0.8;
     transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .delete-button:hover {
@@ -714,7 +714,6 @@ body {
 }
 
 
-/* Asegúrate de añadir esto al final de tu archivo CSS */
 #confirm-modal-color-bar {
     display: none;
 }
@@ -871,9 +870,7 @@ body {
 
 .download-button {
     width: 75%;
-    /* El padding será el 2% del ancho de la ventana, o un máximo de 20px */
     padding: 2vw 40px;
-    /* La fuente será el 1.5% del ancho de la ventana, o un máximo de 16px */
     font-size: min(3vw, 16px);
     font-weight: 400;
     color: #DADADB;
@@ -914,11 +911,9 @@ body {
 
 .progress-container {
     width: 100%;
-    /* La altura será el 1.5% del ancho de la ventana, o un máximo de 25px */
     height: min(1.5vw, 25px); 
     background-color: #171717;
     border: 1px solid #545454;
-    /* El radio del borde se ajustará, pero no superará los 5px */
     border-radius: min(1vw, 5px); 
     overflow: hidden;
     position: absolute;
