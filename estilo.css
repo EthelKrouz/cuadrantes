@@ -352,9 +352,7 @@ body {
     }
 }
 
-.quadrant:hover {
-    filter: brightness(1.3);
-}
+
 
 .top-left {
     top: 0;
