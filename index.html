@@ -93,26 +93,20 @@
         <div id="new-circle-container">
         </div>
         
-        
-        
-<div class="download-area">
-    <button id="download-button" class="download-button hidden">
-        <i class="fas fa-download"></i> Descargar imagen
-    </button>
-    <div id="progress-container" class="progress-container hidden">
-        <div id="progress-bar" class="progress-bar"></div>
-    </div>
-</div>
-
-        
-        
-        
-
+        <div class="download-area">
+            <button id="download-button" class="download-button hidden">
+                <i class="fas fa-download"></i> Descargar / Imagen
+            </button>
+            <div id="progress-container" class="progress-container hidden">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+        </div>
     </div>
 </div>
     
 <div id="name-modal" class="modal">
     <div class="modal-content">
+        <div id="name-modal-color-bar" class="modal-color-bar"></div>
         <span class="close-button close-name-modal-button">&times;</span>
         <h2 id="modal-title"></h2>
         <div class="name-list-container">
@@ -121,21 +115,21 @@
         <input type="text" id="name-input" placeholder="Escribe un nombre">
         <button id="save-name-button">
             <span id="save-button-text">Guardar</span>
-            <span id="save-button-icon">✓</span>
+            <span id="save-button-icon">☑</span>
         </button>
         <div id="notification-message" class="notification-message hidden"></div>
     </div>
 </div>
 
 <div id="confirm-modal" class="modal">
-    <div class="modal-content">
-        <h2 id="confirm-modal-title"></h2>
+    <div class="modal-content confirm-modal-content">
+        <div id="confirm-modal-color-bar" class="modal-color-bar"></div>
+        <h2 id="confirm-modal-title" class="confirm-modal-title-custom"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h2>
         <p>¿Estás seguro de que deseas borrar a <span id="name-to-delete" class="name-to-delete-style"></span>?</p>
         <div class="confirm-buttons">
-            <button id="cancel-delete-button">Cancelar</button>
-            <button id="accept-delete-button">Aceptar</button>
+            <button id="cancel-delete-button" class="cancel-button">Cancelar</button>
+            <button id="accept-delete-button" class="accept-button">Aceptar</button>
         </div>
-        <div id="delete-notification-message" class="notification-message hidden"></div>
     </div>
 </div>
     
