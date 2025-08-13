@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressBar = document.getElementById('progress-bar');
 
     const saveNotification = document.getElementById('notification-message');
-    const deleteNotification = document.getElementById('delete-notification-message');
+    // const deleteNotification = document.getElementById('delete-notification-message'); // Variable eliminada
 
     const pageContent = document.querySelector('.page-content');
     const headerContent = document.querySelector('.header-content');
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isModalOpen = false;
     let isLoading = false;
     let isDownloading = false;
+    let notificationTimeout; // Variable para el temporizador de la notificación
 
     // Cache de datos
     const quadrantData = {
@@ -68,12 +69,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Funciones de utilidad
     function showNotification(element, message, isError = false) {
+        clearTimeout(notificationTimeout);
+        
         element.textContent = message;
         element.classList.remove('hidden');
         element.classList.toggle('error', isError);
         
         setTimeout(() => { element.classList.add('visible'); }, 10);
-        setTimeout(() => {
+        
+        notificationTimeout = setTimeout(() => {
             element.classList.remove('visible');
             setTimeout(() => { element.classList.add('hidden'); }, 500);
         }, 3000);
@@ -82,6 +86,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function showNameModalNotification(message, isError = false) {
         showNotification(saveNotification, message, isError);
     }
+    
+    // Función para ocultar explícitamente la notificación
+    function hideNotification() {
+        const notification = document.getElementById('notification-message');
+        notification.classList.remove('visible');
+        clearTimeout(notificationTimeout);
+        setTimeout(() => { notification.classList.add('hidden'); }, 500);
+    }
+
 
     function openModal(modalElement) {
         isModalOpen = true; 
@@ -114,6 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function closeNameModal() {
         closeModal(nameModal);
         restorePageElements();
+        
+        // Cierra la notificación al cerrar el modal
+        hideNotification();
         
         // Novedad: Reinicia la barra de color
         nameModalColorBar.className = 'modal-color-bar';
@@ -368,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateNameList(nameToDelete.quadrant);
                 closeConfirmModal();
             } catch (error) {
-                showNotification(deleteNotification, "Error al eliminar. Inténtalo de nuevo.", true);
+                showNameModalNotification("Error al eliminar. Inténtalo de nuevo.", true);
                 console.error("Error al eliminar el nombre:", error);
             }
         }
