@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTitle = document.getElementById('modal-title');
     
     const confirmModal = document.getElementById('confirm-modal');
-    const cancelDeleteButton = document.getElementById('cancel-delete-button');
-    const acceptDeleteButton = document.getElementById('accept-delete-button');
+    // Actualiza los selectores a las nuevas clases de los botones
+    const cancelDeleteButton = confirmModal.querySelector('.cancel-button'); 
+    const acceptDeleteButton = confirmModal.querySelector('.accept-button');
     const nameToDeleteSpan = document.getElementById('name-to-delete');
 
     const openCircleModalButton = document.getElementById('open-circle-modal-button');
@@ -28,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const pageContent = document.querySelector('.page-content');
     const headerContent = document.querySelector('.header-content');
+    
+    // Novedad: Variables del DOM para las nuevas barras de color
+    const nameModalColorBar = document.getElementById('name-modal-color-bar');
+    const confirmModalColorBar = document.getElementById('confirm-modal-color-bar');
 
     // Variables de estado
     let activeQuadrant = '';
@@ -51,6 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
         'top-right': { title: 'Nombres para Cuadrante Rojo: <span class="subtitulo-rojo">Propositivo, Competitivo, Demandante, Determinado.</span>' },
         'bottom-left': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Comprensivo, Compartido, Alentador, Relajado, Paciente.</span>' },
         'bottom-right': { title: 'Nombres para Cuadrante Amarillo: <span class="subtitulo-amarillo">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
+    };
+    
+    // Novedad: Objeto para mapear el cuadrante a la clase de color
+    const colorClasses = {
+        'top-left': 'color-top-left',
+        'top-right': 'color-top-right',
+        'bottom-left': 'color-bottom-left',
+        'bottom-right': 'color-bottom-right'
     };
 
     // Funciones de utilidad
@@ -102,6 +115,9 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal(nameModal);
         restorePageElements();
         
+        // Novedad: Reinicia la barra de color
+        nameModalColorBar.className = 'modal-color-bar';
+        
         quadrants.forEach(q => {
             const type = q.dataset.quadrant;
             q.style.zIndex = '1';
@@ -132,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function closeConfirmModal() {
         closeModal(confirmModal);
+        // Novedad: Reinicia la barra de color
+        confirmModalColorBar.className = 'modal-color-bar';
         history.back();
     }
 
@@ -167,6 +185,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 nameToDelete.docId = data.id;
                 nameToDelete.name = data.nombre;
                 nameToDeleteSpan.textContent = data.nombre;
+                
+                // Novedad: Aplica la clase de color al modal de confirmación
+                confirmModalColorBar.className = `modal-color-bar ${colorClasses[quadrant]}`;
+                
                 openModal(confirmModal);
             });
             li.appendChild(deleteButton);
@@ -295,6 +317,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             headerContent.classList.add('hidden-transition');
             openCircleModalButton.classList.add('hidden-transition');
+            
+            // Novedad: Aplica la clase de color a la barra del modal de nombres
+            nameModalColorBar.className = `modal-color-bar ${colorClasses[activeQuadrant]}`;
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
             updateNameList(activeQuadrant);
