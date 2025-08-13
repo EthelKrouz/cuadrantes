@@ -75,7 +75,7 @@ body {
 
 .open-button {
     
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
     width: min(14vw, 60px);
@@ -465,7 +465,7 @@ body {
 }
 
 #confirm-modal.modal.show {
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
 }
 
 .modal-content {
@@ -474,8 +474,8 @@ body {
     align-items: center;
     justify-content: center;
     background-color: rgba(0, 0, 0, 0.1);
-    padding: 5vmin 10px;
-    border: 0.6px solid #48706E;
+    padding: 15px 10px 5vmin 10px; /* Se ajusta el padding superior */
+    border: 0.6px solid #69706F;
     width: 90%;
     max-width: min(90vw, 400px);
     box-sizing: border-box;
@@ -488,6 +488,35 @@ body {
     transform: scale(0.7);
     transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
     opacity: 0;
+    overflow-x: hidden;
+}
+
+/* Estilos para la barra de color en la parte superior del modal */
+.modal-color-bar {
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Clases de color para cada cuadrante */
+.color-top-left {
+    background-color: #5CA5BB;
+}
+
+.color-top-right {
+    background-color: #C94C69;
+}
+
+.color-bottom-left {
+    background-color: #63C963;
+}
+
+.color-bottom-right {
+    background-color: #D5D968;
 }
 
 .modal.show .modal-content {
@@ -503,12 +532,12 @@ body {
 }
 
 .close-button {
-    color: #5E9390;
-    font-size: 28px;
-    font-weight: bold;
+    color: #fff;
+    font-size: 7.5vw; /* aprox. igual a 28px en una pantalla de 375px de ancho */
+    
     position: absolute;
-    top: 0;
-    right: 10px;
+    top: -6px;
+    right: 6px;
 }
 
 .close-button:hover,
@@ -615,7 +644,7 @@ body {
     padding: 0;
     margin: 0;
     text-align: left;
-    color: #fff;
+    color: #DEDDDF;
 }
 
 #name-list li {
@@ -686,6 +715,13 @@ body {
     margin-bottom: 10px;
 }
 
+
+/* Asegúrate de añadir esto al final de tu archivo CSS */
+#confirm-modal-color-bar {
+    display: none;
+}
+
+
 #accept-delete-button {
     padding: 2vw 20px;
     background-color: rgba(199, 72, 104, 0.8);
@@ -706,7 +742,7 @@ body {
     padding: 2vw 20px;
     background-color: rgba(23, 23, 23, 0.5);
     color: #fff;
-    border: 1px solid #6E6E6E;
+    border: 0.5px solid #ADA9AA;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -838,14 +874,14 @@ body {
 .download-button {
     width: 75%;
     /* El padding será el 2% del ancho de la ventana, o un máximo de 20px */
-    padding: min(2vw, 10px); 
+    padding: 2vw 40px;
     /* La fuente será el 1.5% del ancho de la ventana, o un máximo de 16px */
     font-size: min(3vw, 16px);
-    font-weight: 500;
-    color: #fff;
-    background: linear-gradient(135deg, #246058 50%, #322750 100%);
-    border: 1px solid #40A99B;
-    border-radius: 8px;
+    font-weight: 400;
+    color: #DADADB;
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid #545454;
+    border-radius: 5px;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease-in-out;
@@ -864,7 +900,7 @@ body {
 }
 
 .download-button:hover {
-    background: linear-gradient(135deg, #286D63 0%, #286D63 100%);
+    background: linear-gradient(135deg, #242525 0%, #242525 100%);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
@@ -883,7 +919,7 @@ body {
     /* La altura será el 1.5% del ancho de la ventana, o un máximo de 25px */
     height: min(1.5vw, 25px); 
     background-color: #171717;
-    border: 1px solid #40A99B;
+    border: 1px solid #545454;
     /* El radio del borde se ajustará, pero no superará los 5px */
     border-radius: min(1vw, 5px); 
     overflow: hidden;
@@ -903,7 +939,7 @@ body {
 .progress-bar {
     height: 100%;
     width: 0;
-    background: linear-gradient(90deg, #40A99B, #6EFFB6);
+    background: linear-gradient(90deg, #DADADB, #DADADB);
     transition: width 0.4s ease;
 }
 
@@ -959,4 +995,3 @@ body {
 .notification-message.error {
     background-color: #D74951;
 }
-
