@@ -123,7 +123,7 @@ body {
     font-family: 'Poppins', sans-serif;
     position: absolute;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
-    border-radius: 15px;
+    border-radius: 35px 10px;
     width: 15vmin;
     height: 15vmin;
     max-width: 120px;
@@ -136,7 +136,7 @@ body {
     flex-direction: column;
     justify-content: center;
     gap: 1px;
-    padding: 1vmin 12px;
+    padding: 1vmin 10px;
     text-align: center;
     opacity: 0.9;
     transition: all 0.4s ease-in-out;
@@ -167,25 +167,43 @@ body {
 }
 
 @media (min-width: 769px) {
+    
+    
+    .main-container {
+    
+    
+    
+    top: 30%;
+    left: 50%;
+    
+}
+
+
+
+
+
+    
+    
     .label {
+        padding: 1vmin 40px;
         width: 150px;
         height: 150px;
         font-size: 16px;
     }
     .label-top-left {
-        top: 20%;
+        top: 35%;
         left: 20%;
     }
     .label-top-right {
-        top: 20%;
+        top: 35%;
         right: 20%;
     }
     .label-bottom-left {
-        bottom: 20%;
+        bottom: 35%;
         left: 20%;
     }
     .label-bottom-right {
-        bottom: 20%;
+        bottom: 35%;
         right: 20%;
     }
 }
