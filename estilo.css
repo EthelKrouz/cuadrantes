@@ -16,19 +16,7 @@ body {
 }
 
 
-.whatsapp-webview .main-title {
-    /* Aquí puedes usar un valor fijo o una unidad diferente */
-    font-size: 20px !important;
-}
 
-.whatsapp-webview .main-subtitle {
-    font-size: 12px !important;
-}
-
-/* También puedes redefinir otros elementos */
-.whatsapp-webview .label {
-    font-size: 12px !important;
-}
 
 
 .page-content {
@@ -84,10 +72,10 @@ body {
     background: none;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    width: min(8vw, 40px);
-    height: min(8vw, 40px);
+    width: min(8vw, 60px);
+    height: min(8vw, 60px);
     color: #CBCBCA;
-    font-size: min(4vw, 20px);
+    font-size: min(5vw, 30px);
     cursor: pointer;
     backdrop-filter: blur(8px);
     transition: background-color 0.3s ease, transform 0.3s ease;
@@ -1279,4 +1267,3 @@ body {
 .share-button-main.hidden {
     display: none;
 }
-
