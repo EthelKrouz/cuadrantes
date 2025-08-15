@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingSpinner.style.display = 'none';
             newCircleContainer.classList.add('hidden');
             downloadButton.classList.add('hidden');
-            progressContainer.classList.add('hidden');
+            progressContainer.classList.remove('visible');
             progressBar.style.width = '0%';
             
             document.querySelector('.main-container').classList.remove('hidden');
@@ -181,22 +181,24 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateNameList(quadrant) {
         const currentNames = quadrantData[quadrant];
         nameList.innerHTML = '';
-        currentNames.forEach(data => {
+        
+        currentNames.forEach((data, index) => {
             const li = document.createElement('li');
-
+            li.classList.add('new-item-anim'); // Clase para la animación
+            
             const nameSpan = document.createElement('span');
             nameSpan.textContent = data.nombre;
             
             const rightSideContainer = document.createElement('div');
             rightSideContainer.style.display = 'flex';
             rightSideContainer.style.alignItems = 'center';
-
+    
             const dateAdded = data.timestamp.toLocaleDateString('es-ES', {
                 year: '2-digit',
                 month: '2-digit',
                 day: '2-digit'
             });
-
+    
             const dateSpan = document.createElement('span');
             dateSpan.textContent = ` ${dateAdded}`;
             dateSpan.style.fontSize = 'min(3vw, 12px)';
@@ -224,8 +226,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             li.appendChild(nameSpan);
             li.appendChild(rightSideContainer);
-
+    
             nameList.appendChild(li);
+            
+            setTimeout(() => {
+                li.classList.remove('new-item-anim');
+            }, 50 * index);
         });
     }
 
@@ -463,27 +469,32 @@ document.addEventListener('DOMContentLoaded', function() {
         isDownloading = true;
 
         downloadButton.classList.add('hidden');
-        progressContainer.classList.remove('hidden');
+        progressContainer.classList.add('visible');
 
         let progress = 0;
         const interval = setInterval(() => {
             progress += 1;
             progressBar.style.width = `${progress}%`;
-            if (progress >= 95) clearInterval(interval);
-        }, 20); 
+            if (progress >= 100) clearInterval(interval);
+        }, 10);
         
         setTimeout(async () => {
-            await captureAndDownloadNames('black');
-            clearInterval(interval);
-            progressBar.style.width = '100%';
-            
-            setTimeout(() => {
-                progressContainer.classList.add('hidden');
-                downloadButton.classList.remove('hidden');
-                progressBar.style.width = '0%';
-                isDownloading = false;
-            }, 500);
-        }, 2000); 
+            try {
+                await captureAndDownloadNames('black');
+            } catch (error) {
+                console.error("Error during download:", error);
+            } finally {
+                clearInterval(interval);
+                progressBar.style.width = '100%';
+                
+                setTimeout(() => {
+                    progressContainer.classList.remove('visible');
+                    downloadButton.classList.remove('hidden');
+                    progressBar.style.width = '0%';
+                    isDownloading = false;
+                }, 1000);
+            }
+        }, 700); 
     });
 
     const preloadData = async () => {
