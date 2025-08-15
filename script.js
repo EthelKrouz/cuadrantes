@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveNotification = document.getElementById('notification-message');
 
     const pageContent = document.querySelector('.page-content');
-    const headerContent = document.querySelector('.main-header');
+    const headerContent = document.querySelector('.main-header'); 
     
     const nameModalColorBar = document.getElementById('name-modal-color-bar');
     const confirmModalColorBar = document.getElementById('confirm-modal-color-bar');
