@@ -18,9 +18,16 @@
     <div class="header-content">
         <h1 class="main-title">Análisis de Perfiles</h1>
         <p class="main-subtitle">Herramienta visual para clasificar<br> perfiles de personalidad.</p>
+        <button id="share-main-button" class="share-button-main hidden">
+            <i class="fas fa-share-alt"></i> Compartir
+        </button>
+    </div>
+    <div class="header-buttons">
+        <button id="open-tutorial-modal-button" class="tutorial-button" title="Cómo usarlo">
+            <i class="fas fa-question-circle"></i>
+        </button>
     </div>
 </header>
-
 
 <button id="open-circle-modal-button" class="open-button"></button>
 
@@ -130,6 +137,43 @@
             <button id="cancel-delete-button" class="cancel-button">Cancelar</button>
             <button id="accept-delete-button" class="accept-button">Aceptar</button>
         </div>
+    </div>
+</div>
+
+<div id="tutorial-modal" class="modal">
+    <div class="modal-content tutorial-modal-content">
+        <span class="close-button close-tutorial-modal-button">&times;</span>
+        <h2 class="tutorial-title">¿Cómo usarlo?</h2>
+        <ol class="tutorial-list">
+            <li>
+                <div class="tutorial-icon-container"><i class="fas fa-mouse-pointer"></i></div>
+                <div class="tutorial-step">
+                    **Selecciona un cuadrante**<br>
+                    Haz clic en uno de los cuatro cuadrantes para empezar a clasificar.
+                </div>
+            </li>
+            <li>
+                <div class="tutorial-icon-container"><i class="fas fa-user-plus"></i></div>
+                <div class="tutorial-step">
+                    **Añade un nombre**<br>
+                    Escribe el nombre de una persona que se ajuste a la descripción del cuadrante.
+                </div>
+            </li>
+            <li>
+                <div class="tutorial-icon-container"><i class="fas fa-save"></i></div>
+                <div class="tutorial-step">
+                    **Guarda el perfil**<br>
+                    Pulsa "Guardar" para añadir la persona a tu lista.
+                </div>
+            </li>
+            <li>
+                <div class="tutorial-icon-container"><i class="fas fa-eye"></i></div>
+                <div class="tutorial-step">
+                    **Visualiza el círculo completo**<br>
+                    Cuando termines, haz clic en el botón de la esquina superior derecha <i class="fas fa-users"></i> para ver todos tus perfiles en un solo lugar.
+                </div>
+            </li>
+        </ol>
     </div>
 </div>
     
