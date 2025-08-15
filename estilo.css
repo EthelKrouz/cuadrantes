@@ -59,13 +59,13 @@ body {
     .main-subtitle {
         font-size: 16px;
     }
-    
-    
+
+
     .open-button {
     font-size: min(6vw, 40px); /* escala con el ancho, pero no pasa de 40px */
-    
+
 }
-    
+
 }
 
 .main-container {
@@ -173,23 +173,21 @@ body {
 }
 
 @media (min-width: 769px) {
-    
-    
+
+
     .main-container {
-    
-    
-    
+
+
+
     top: 30%;
     left: 50%;
-    
+
 }
 
 
 
 
 
-    
-    
     .label {
         padding: 1vmin 40px;
         width: 150px;
@@ -358,7 +356,7 @@ body {
 
 .plus-container:hover {
     opacity: 1;
-    
+
 }
 
 .plus-container:hover .plus-horizontal,
@@ -534,6 +532,12 @@ body {
     background-color: rgba(23, 23, 23, 0.2);
 }
 
+/* Nuevo: Clase para animar el cierre del modal */
+.modal.closing {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
 #confirm-modal.modal.show {
     backdrop-filter: blur(8px);
 }
@@ -591,6 +595,13 @@ body {
     transform: scale(1);
     opacity: 1;
 }
+
+/* Nuevo: animación de salida para el modal-content */
+.modal.closing .modal-content {
+    transform: scale(0.95);
+    opacity: 0;
+}
+
 
 .modal-content h2 {
     margin-top: 0;
@@ -854,7 +865,7 @@ body {
     box-sizing: border-box;
     position: relative;
     overflow-x: hidden;
-    padding-bottom: 25px; 
+    padding-bottom: 25px;
 }
 
 .new-circle-container {
@@ -967,7 +978,7 @@ body {
     justify-content: center;
     gap: 10px;
     white-space: nowrap;
-    
+
 }
 
 /* Media query para pantallas de escritorio (más de 768px) */
@@ -990,12 +1001,12 @@ body {
 .progress-container {
     opacity: 0;
     width: 0;
-    height: min(1.5vw, 25px); 
+    height: min(1.5vw, 25px);
     background-color: #171717;
     border: 1px solid #545454;
-    border-radius: min(1vw, 5px); 
+    border-radius: min(1vw, 5px);
     overflow: hidden;
-    position: absolute; 
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
