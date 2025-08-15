@@ -58,10 +58,16 @@ body {
     .main-subtitle {
         font-size: 16px;
     }
+    
+    
+    .open-button {
+    font-size: min(6vw, 40px); /* escala con el ancho, pero no pasa de 40px */
+    
+}
+    
 }
 
 .main-container {
-    
     position: relative;
     width: 100%;
     height: 100%;
@@ -74,12 +80,11 @@ body {
 }
 
 .open-button {
-    
     position: absolute;
     top: 20px;
-    right: 20px;
-    width: min(14vw, 60px);
-    height: min(14vw, 60px);
+    right: 15px;
+    width: min(14vw, 90px);
+    height: min(14vw, 90px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,7 +102,7 @@ body {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;
     content: '\f0c0';
-    font-size: 20px;
+    font-size: min(6vw, 40px); /* escala con el ancho, pero no pasa de 40px */
     transition: transform 0.3s ease;
 }
 
@@ -666,6 +671,14 @@ body {
     padding: 5px 0;
     border-bottom: 1px solid #333;
     font-size: min(4vw, 15px);
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+#name-list li.new-item-anim {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 #name-list li:last-child {
@@ -787,10 +800,12 @@ body {
 
 .circle-modal-content {
     width: 90%;
-    max-width: min(90vw, 400px);
+    max-width: min(90vw, 800px);
     box-sizing: border-box;
     position: relative;
     overflow-x: hidden;
+    /* --- CAMBIO APLICADO AQUÍ --- */
+    padding-bottom: 25px; 
 }
 
 .new-circle-container {
@@ -880,6 +895,7 @@ body {
     position: relative;
     width: 100%;
     max-width: 250px;
+    /* --- CAMBIO APLICADO AQUÍ --- */
     margin-top: 25px;
     display: flex;
     justify-content: center;
@@ -887,8 +903,8 @@ body {
 }
 
 .download-button {
-    width: 75%;
-    padding: 2vw 40px;
+    width: 50vw;
+    padding: 2vw 40px; /* Padding para dispositivos móviles */
     font-size: min(3vw, 16px);
     font-weight: 400;
     color: #DADADB;
@@ -897,55 +913,60 @@ body {
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease-in-out;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     white-space: nowrap;
+    
+    /* --- CAMBIO APLICADO AQUÍ: se eliminó la posición absoluta --- */
+    /* position: absolute; */
+    /* top: 50%; */
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    
 }
 
+/* Media query para pantallas de escritorio (más de 768px) */
+@media (min-width: 769px) {
+    .download-button {
+        padding: 0.7vw 20px; /* Padding para dispositivos móviles */
+          font-size: min(2vw, 14px);
+          width: 100%;
+    }
+}
 
 .download-button.hidden {
     opacity: 0;
-    transform: translateY(10px);
     pointer-events: none;
-}
-
-.download-button:hover {
-    background: linear-gradient(135deg, #242525 0%, #242525 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.download-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.download-button i {
-    font-size: 16px;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 0;
+    padding: 0;
 }
 
 .progress-container {
-    width: 100%;
+    opacity: 0;
+    width: 0;
     height: min(1.5vw, 25px); 
     background-color: #171717;
     border: 1px solid #545454;
     border-radius: min(1vw, 5px); 
     overflow: hidden;
-    position: absolute;
+    position: absolute; 
     top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    transition: opacity 0.5s ease;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.progress-container.visible {
+    opacity: 1;
+    width: 100%;
 }
 
 
-.progress-container.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
+
 
 .progress-bar {
     height: 100%;
