@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveNotification = document.getElementById('notification-message');
 
     const pageContent = document.querySelector('.page-content');
-    const headerContent = document.querySelector('.header-content');
+    const headerContent = document.querySelector('.main-header');
     
     const nameModalColorBar = document.getElementById('name-modal-color-bar');
     const confirmModalColorBar = document.getElementById('confirm-modal-color-bar');
@@ -58,6 +58,13 @@ document.addEventListener('DOMContentLoaded', function() {
         'top-right': 'color-top-right',
         'bottom-left': 'color-bottom-left',
         'bottom-right': 'color-bottom-right'
+    };
+    
+    const initialPositionClasses = {
+        'top-left': 'top-left',
+        'top-right': 'top-right',
+        'bottom-left': 'bottom-left',
+        'bottom-right': 'bottom-right'
     };
 
     function showNotification(element, message, isError = false) {
@@ -116,28 +123,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function closeNameModal() {
         closeModal(nameModal);
-        restorePageElements();
-        
         hideNotification();
-        
         nameModalColorBar.className = 'modal-color-bar';
         
         quadrants.forEach(q => {
-            const type = q.dataset.quadrant;
-            q.style.zIndex = '1';
-            q.style.opacity = '1';
-            q.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), filter 0.4s ease';
-            q.style.transform = type === 'top-left' ? 'translate(-5px, -5px)' :
-                                type === 'top-right' ? 'translate(5px, -5px)' :
-                                type === 'bottom-left' ? 'translate(-5px, 5px)' :
-                                'translate(5px, 5px)';
+            const quadrantType = q.dataset.quadrant;
+            q.classList.remove('is-active-top-left', 'is-active-top-right', 'is-active-bottom-left', 'is-active-bottom-right', 'is-hidden');
+            q.classList.add(initialPositionClasses[quadrantType]);
         });
     }
     
     function closeCircleModal() {
         closeModal(circleModal);
-        restorePageElements();
-        
         setTimeout(() => {
             newCircleContainer.innerHTML = '';
             loadingSpinner.style.display = 'none';
@@ -145,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadButton.classList.add('hidden');
             progressContainer.classList.remove('visible');
             progressBar.style.width = '0%';
-            
             document.querySelector('.main-container').classList.remove('hidden');
         }, 500);
     }
@@ -155,6 +151,25 @@ document.addEventListener('DOMContentLoaded', function() {
         confirmModalColorBar.className = 'modal-color-bar';
         history.back();
     }
+
+    nameModal.addEventListener('transitionend', function(e) {
+        if (!nameModal.classList.contains('show') && e.propertyName === 'opacity') {
+            restorePageElements();
+        }
+    });
+
+    circleModal.addEventListener('transitionend', function(e) {
+        if (!circleModal.classList.contains('show') && e.propertyName === 'opacity') {
+            restorePageElements();
+        }
+    });
+
+    confirmModal.addEventListener('transitionend', function(e) {
+        if (!confirmModal.classList.contains('show') && e.propertyName === 'opacity') {
+            // No hacemos nada aquí, ya que el popstate se encargará de restaurar.
+        }
+    });
+
 
     async function getNamesForQuadrant(quadrantName) {
         const names = [];
@@ -184,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         currentNames.forEach((data, index) => {
             const li = document.createElement('li');
-            li.classList.add('new-item-anim'); // Clase para la animación
+            li.classList.add('new-item-anim');
             
             const nameSpan = document.createElement('span');
             nameSpan.textContent = data.nombre;
@@ -332,23 +347,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!quadrantData[activeQuadrant] || quadrantData[activeQuadrant].length === 0) {
                  await getNamesForQuadrant(activeQuadrant);
             }
-            
+
             quadrants.forEach(q => {
-                const type = q.dataset.quadrant;
-                const transformValue = type === 'top-left' ? 'translate(-200px, -250px) scale(3)' :
-                                     type === 'top-right' ? 'translate(200px, -250px) scale(3)' :
-                                     type === 'bottom-left' ? 'translate(-200px, 250px) scale(3)' :
-                                     'translate(200px, 250px) scale(3)';
-                
-                q.style.transition = 'transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease';
                 if (q === quadrant) {
-                    q.style.transform = transformValue;
-                    q.style.zIndex = '10';
-                    q.style.opacity = '1';
+                    q.classList.add(`is-active-${activeQuadrant}`);
+                    q.classList.remove('is-hidden');
                 } else {
-                    q.style.transform = 'translate(0, 0) scale(1)';
-                    q.style.zIndex = '1';
-                    q.style.opacity = '0';
+                    q.classList.add('is-hidden');
+                    q.classList.remove('is-active-top-left', 'is-active-top-right', 'is-active-bottom-left', 'is-active-bottom-right');
                 }
             });
             
