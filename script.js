@@ -1,3 +1,12 @@
+// Añadir al inicio de tu script.js
+const isWhatsAppWebView = navigator.userAgent.includes('_WA_');
+
+if (isWhatsAppWebView) {
+    document.body.classList.add('whatsapp-webview');
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const quadrants = document.querySelectorAll('.quadrant');
     const nameModal = document.getElementById('name-modal');
