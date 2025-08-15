@@ -1163,7 +1163,7 @@ body {
 .info-text,
 .tutorial-step {
     /* MODIFICADO: Reducción del tamaño de fuente del texto */
-    font-size: min(4vw, 15px);
+    font-size: min(3.5vw, 13px);
     
     /* MODIFICADO: Reducción del interlineado */
     line-height: 1.5;
@@ -1196,11 +1196,11 @@ body {
 
 .tutorial-icon-container {
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
+    border-radius: 10%;
     
     /* MODIFICADO: Reducción del tamaño del contenedor del icono */
-    min-width: 35px;
-    min-height: 35px;
+    min-width: 8vw;
+    min-height: 8vw;
     
     display: flex;
     justify-content: center;
@@ -1208,7 +1208,7 @@ body {
     color: #8EEEFF;
     
     /* MODIFICADO: Reducción del tamaño del icono */
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .share-button-main {
