@@ -1,4 +1,7 @@
 body {
+    
+    
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,6 +14,22 @@ body {
     box-shadow: none !important;
     -webkit-tap-highlight-color: transparent;
 }
+
+
+.whatsapp-webview .main-title {
+    /* Aquí puedes usar un valor fijo o una unidad diferente */
+    font-size: 20px !important;
+}
+
+.whatsapp-webview .main-subtitle {
+    font-size: 12px !important;
+}
+
+/* También puedes redefinir otros elementos */
+.whatsapp-webview .label {
+    font-size: 12px !important;
+}
+
 
 .page-content {
     position: relative;
