@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const nameInput = document.getElementById('name-input');
     const nameList = document.getElementById('name-list');
     const modalTitle = document.getElementById('modal-title');
-    
+
     const confirmModal = document.getElementById('confirm-modal');
-    const cancelDeleteButton = confirmModal.querySelector('.cancel-button'); 
+    const cancelDeleteButton = confirmModal.querySelector('.cancel-button');
     const acceptDeleteButton = confirmModal.querySelector('.accept-button');
     const nameToDeleteSpan = document.getElementById('name-to-delete');
 
@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveNotification = document.getElementById('notification-message');
 
     const pageContent = document.querySelector('.page-content');
-    const headerContent = document.querySelector('.main-header'); 
-    
+    const headerContent = document.querySelector('.main-header');
+
     const nameModalColorBar = document.getElementById('name-modal-color-bar');
     const confirmModalColorBar = document.getElementById('confirm-modal-color-bar');
 
@@ -52,14 +52,14 @@ document.addEventListener('DOMContentLoaded', function() {
         'bottom-left': { title: 'Nombres para Cuadrante Verde: <span class="subtitulo-verde">Comprensivo, Compartido, Alentador, Relajado, Paciente.</span>' },
         'bottom-right': { title: 'Nombres para Cuadrante Amarillo: <span class="subtitulo-amarillo">Dinámico, Persuasivo, Entusiasta, Expresivo, Sociable.</span>' }
     };
-    
+
     const colorClasses = {
         'top-left': 'color-top-left',
         'top-right': 'color-top-right',
         'bottom-left': 'color-bottom-left',
         'bottom-right': 'color-bottom-right'
     };
-    
+
     const initialPositionClasses = {
         'top-left': 'top-left',
         'top-right': 'top-right',
@@ -69,23 +69,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showNotification(element, message, isError = false) {
         clearTimeout(notificationTimeout);
-        
+
         element.textContent = message;
         element.classList.remove('hidden');
         element.classList.toggle('error', isError);
-        
+
         setTimeout(() => { element.classList.add('visible'); }, 10);
-        
+
         notificationTimeout = setTimeout(() => {
             element.classList.remove('visible');
             setTimeout(() => { element.classList.add('hidden'); }, 500);
         }, 3000);
     }
-    
+
     function showNameModalNotification(message, isError = false) {
         showNotification(saveNotification, message, isError);
     }
-    
+
     function hideNotification() {
         const notification = document.getElementById('notification-message');
         notification.classList.remove('visible');
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function openModal(modalElement) {
-        isModalOpen = true; 
+        isModalOpen = true;
         modalElement.classList.add('show');
         pageContent.classList.add('blur-background');
 
@@ -104,20 +104,27 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modalElement.id === 'circle-modal') {
             document.querySelector('.main-container').classList.add('hidden');
         }
-        
+
         setTimeout(() => {
             history.pushState({ modalId: modalElement.id }, '', `#${modalElement.id}`);
         }, 10);
     }
-    
+
     function closeModal(modalElement) {
-        modalElement.classList.remove('show');
+        modalElement.classList.add('closing');
+
+        modalElement.addEventListener('transitionend', function handler(e) {
+            if (e.target === modalElement) {
+                modalElement.classList.remove('show', 'closing');
+                modalElement.removeEventListener('transitionend', handler);
+            }
+        });
     }
 
     function restorePageElements() {
         headerContent.classList.remove('hidden-transition');
         openCircleModalButton.classList.remove('hidden-transition');
-        pageContent.classList.remove('blur-background'); 
+        pageContent.classList.remove('blur-background');
         isModalOpen = false;
     }
 
@@ -125,63 +132,62 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal(nameModal);
         hideNotification();
         nameModalColorBar.className = 'modal-color-bar';
-        
+
         quadrants.forEach(q => {
             const quadrantType = q.dataset.quadrant;
             q.classList.remove('is-active-top-left', 'is-active-top-right', 'is-active-bottom-left', 'is-active-bottom-right', 'is-hidden');
             q.classList.add(initialPositionClasses[quadrantType]);
         });
+
+        nameModal.addEventListener('transitionend', function handler(e) {
+            if (e.target === nameModal) {
+                restorePageElements();
+                nameModal.removeEventListener('transitionend', handler);
+            }
+        });
     }
-    
+
     function closeCircleModal() {
         closeModal(circleModal);
-        setTimeout(() => {
-            newCircleContainer.innerHTML = '';
-            loadingSpinner.style.display = 'none';
-            newCircleContainer.classList.add('hidden');
-            downloadButton.classList.add('hidden');
-            progressContainer.classList.remove('visible');
-            progressBar.style.width = '0%';
-            document.querySelector('.main-container').classList.remove('hidden');
-        }, 500);
+        
+        circleModal.addEventListener('transitionend', function handler(e) {
+            if (e.target === circleModal) {
+                newCircleContainer.innerHTML = '';
+                loadingSpinner.style.display = 'none';
+                newCircleContainer.classList.add('hidden');
+                downloadButton.classList.add('hidden');
+                progressContainer.classList.remove('visible');
+                progressBar.style.width = '0%';
+                document.querySelector('.main-container').classList.remove('hidden');
+                restorePageElements();
+                circleModal.removeEventListener('transitionend', handler);
+            }
+        });
     }
-    
+
     function closeConfirmModal() {
         closeModal(confirmModal);
         confirmModalColorBar.className = 'modal-color-bar';
-        history.back();
+
+        confirmModal.addEventListener('transitionend', function handler(e) {
+            if (e.target === confirmModal) {
+                history.back();
+                confirmModal.removeEventListener('transitionend', handler);
+            }
+        });
     }
-
-    nameModal.addEventListener('transitionend', function(e) {
-        if (!nameModal.classList.contains('show') && e.propertyName === 'opacity') {
-            restorePageElements();
-        }
-    });
-
-    circleModal.addEventListener('transitionend', function(e) {
-        if (!circleModal.classList.contains('show') && e.propertyName === 'opacity') {
-            restorePageElements();
-        }
-    });
-
-    confirmModal.addEventListener('transitionend', function(e) {
-        if (!confirmModal.classList.contains('show') && e.propertyName === 'opacity') {
-            // No hacemos nada aquí, ya que el popstate se encargará de restaurar.
-        }
-    });
-
 
     async function getNamesForQuadrant(quadrantName) {
         const names = [];
         try {
             const namesCollectionRef = window.collection(window.db, quadrantName);
-            const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc')); 
+            const q = window.query(namesCollectionRef, window.orderBy('timestamp', 'asc'));
             const namesSnapshot = await window.getDocs(q);
             namesSnapshot.forEach(doc => {
                 const data = doc.data();
                 const date = data.timestamp ? data.timestamp.toDate() : new Date();
-                names.push({ 
-                    id: doc.id, 
+                names.push({
+                    id: doc.id,
                     nombre: data.nombre,
                     timestamp: date
                 });
@@ -192,34 +198,34 @@ document.addEventListener('DOMContentLoaded', function() {
             throw e;
         }
     }
-    
+
     function updateNameList(quadrant) {
         const currentNames = quadrantData[quadrant];
         nameList.innerHTML = '';
-        
+
         currentNames.forEach((data, index) => {
             const li = document.createElement('li');
             li.classList.add('new-item-anim');
-            
+
             const nameSpan = document.createElement('span');
             nameSpan.textContent = data.nombre;
-            
+
             const rightSideContainer = document.createElement('div');
             rightSideContainer.style.display = 'flex';
             rightSideContainer.style.alignItems = 'center';
-    
+
             const dateAdded = data.timestamp.toLocaleDateString('es-ES', {
                 year: '2-digit',
                 month: '2-digit',
                 day: '2-digit'
             });
-    
+
             const dateSpan = document.createElement('span');
             dateSpan.textContent = ` ${dateAdded}`;
             dateSpan.style.fontSize = 'min(3vw, 12px)';
-            dateSpan.style.color = '#a0a0a0'; 
+            dateSpan.style.color = '#a0a0a0';
             dateSpan.style.marginRight = '5px';
-            
+
             const deleteButton = document.createElement('button');
             const icon = document.createElement('i');
             icon.classList.add('far', 'fa-trash-alt');
@@ -230,20 +236,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 nameToDelete.docId = data.id;
                 nameToDelete.name = data.nombre;
                 nameToDeleteSpan.textContent = data.nombre;
-                
+
                 confirmModalColorBar.className = `modal-color-bar ${colorClasses[quadrant]}`;
-                
+
                 openModal(confirmModal);
             });
-            
+
             rightSideContainer.appendChild(dateSpan);
             rightSideContainer.appendChild(deleteButton);
-            
+
             li.appendChild(nameSpan);
             li.appendChild(rightSideContainer);
-    
+
             nameList.appendChild(li);
-            
+
             setTimeout(() => {
                 li.classList.remove('new-item-anim');
             }, 50 * index);
@@ -279,7 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderNewCircle() {
         const createNameList = (names) => names.map(name => `<li class="new-quadrant-name">${name.nombre}</li>`).join('');
-        
+
         const circleHTML = `
             <div class="new-circle-container">
                 <div class="new-circle">
@@ -290,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         newCircleContainer.innerHTML = circleHTML;
         newCircleContainer.classList.remove('hidden');
         loadingSpinner.style.display = 'none';
@@ -300,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function captureAndDownloadNames(bgColor) {
         const createNameList = (names, color) => names.map(name => `<li style="font-size: 24px; line-height: 1.0; margin: 2px 0; font-weight: 300; color: ${color};">${name.nombre}</li>`).join('');
-        
+
         const tempCircleContainer = document.createElement('div');
         Object.assign(tempCircleContainer.style, {
             width: '600px', height: '600px', borderRadius: '50%', overflow: 'hidden',
@@ -308,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const quadrantStyle = 'width: 50%; height: 50%; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 10px; box-sizing: border-box; text-align: center;';
-        
+
         const quadrantHTML = `
             <div style="display: flex; flex-wrap: wrap; width: 100%; height: 100%;">
                 <div style="${quadrantStyle} background-color: #5CA5BB;">
@@ -325,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         tempCircleContainer.innerHTML = quadrantHTML;
         document.body.appendChild(tempCircleContainer);
 
@@ -343,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
     quadrants.forEach(quadrant => {
         quadrant.addEventListener('click', async () => {
             activeQuadrant = quadrant.dataset.quadrant;
-            
+
             if (!quadrantData[activeQuadrant] || quadrantData[activeQuadrant].length === 0) {
                  await getNamesForQuadrant(activeQuadrant);
             }
@@ -357,10 +363,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     q.classList.remove('is-active-top-left', 'is-active-top-right', 'is-active-bottom-left', 'is-active-bottom-right');
                 }
             });
-            
+
             headerContent.classList.add('hidden-transition');
             openCircleModalButton.classList.add('hidden-transition');
-            
+
             nameModalColorBar.className = `modal-color-bar ${colorClasses[activeQuadrant]}`;
 
             modalTitle.innerHTML = quadrantInfo[activeQuadrant].title;
@@ -419,7 +425,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cancelDeleteButton.addEventListener('click', closeConfirmModal);
 
     circleModalCloseButton.addEventListener('click', () => {
-        if (isLoading) return; 
+        if (isLoading) return;
         history.back();
     });
 
@@ -442,9 +448,9 @@ document.addEventListener('DOMContentLoaded', function() {
             history.pushState({ modalId: currentModal.id }, '', `#${currentModal.id}`);
             return;
         }
-        
+
         if (event.state && currentModal.id === event.state.modalId) return;
-        
+
         if (currentModal.id === 'name-modal') closeNameModal();
         else if (currentModal.id === 'circle-modal') closeCircleModal();
         else if (currentModal.id === 'confirm-modal') closeConfirmModal();
@@ -455,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
         headerContent.classList.add('hidden-transition');
         openModal(circleModal);
 
-        isLoading = true; 
+        isLoading = true;
         loadingSpinner.style.display = 'block';
         newCircleContainer.innerHTML = '';
         newCircleContainer.classList.add('hidden');
@@ -467,11 +473,11 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingSpinner.style.display = 'none';
         renderNewCircle();
 
-        isLoading = false; 
+        isLoading = false;
     });
 
     downloadButton.addEventListener('click', async () => {
-        if (isDownloading) return; 
+        if (isDownloading) return;
         isDownloading = true;
 
         downloadButton.classList.add('hidden');
@@ -483,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
             progressBar.style.width = `${progress}%`;
             if (progress >= 100) clearInterval(interval);
         }, 10);
-        
+
         setTimeout(async () => {
             try {
                 await captureAndDownloadNames('black');
@@ -492,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } finally {
                 clearInterval(interval);
                 progressBar.style.width = '100%';
-                
+
                 setTimeout(() => {
                     progressContainer.classList.remove('visible');
                     downloadButton.classList.remove('hidden');
@@ -500,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     isDownloading = false;
                 }, 1000);
             }
-        }, 700); 
+        }, 700);
     });
 
     const preloadData = async () => {
