@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (navigator.share) {
             navigator.share({
                 title: document.title,
-                text: 'Descubre tu perfil de personalidad con esta herramienta visual. ¡Es genial!',
+                text: 'clasificación de perfiles',
                 url: window.location.href
             }).then(() => {
                 console.log('¡Compartido con éxito!');
