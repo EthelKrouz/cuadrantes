@@ -1213,22 +1213,44 @@ body {
 
 .share-button-main {
     margin-top: 10px;
-    padding: 8px 15px;
+    
+    /* El padding del botón se ajusta al viewport, pero tiene un límite de 15px. */
+    padding: min(2vw, 15px) min(3vw, 25px);
+    
+    /* El tamaño del texto se ajusta al viewport, pero nunca supera los 14px. */
     font-size: min(3vw, 14px);
+    
     font-weight: 400;
     color: #DADADB;
     background: rgba(30, 30, 30, 0.5);
     border: 1px solid #545454;
     border-radius: 5px;
     cursor: pointer;
-    
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    
+    /* El espacio entre el ícono y el texto se ajusta al viewport, pero tiene un límite de 10px. */
+    gap: min(1vw, 10px);
+    
     white-space: nowrap;
 }
+
+.share-button-main .fas {
+    /* El tamaño del ícono se ajusta al viewport, pero tiene un límite de 14px. */
+    font-size: min(3vw, 14px);
+}
+
+@media (min-width: 769px) {
+    .share-button-main {
+        /* Para pantallas grandes, usa valores fijos en píxeles. */
+        font-size: 16px;
+        padding: 8px 15px;
+        gap: 8px;
+    }
+}
+
 
 .share-button-main:focus {
     background: rgba(40, 40, 40, 0.7);
