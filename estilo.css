@@ -182,7 +182,7 @@ body {
     width: 15vmin;
     height: 15vmin;
     max-width: 120px;
-    max-height: 120px;
+    max-height: 90px;
     background: rgba(30, 30, 30, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -280,7 +280,7 @@ body {
     .label {
         width: min(25vw, 120px);
         height: min(25vw, 120px);
-        font-size: min(3vw, 14px);
+        font-size: min(3vw, 11px);
     }
 }
 
