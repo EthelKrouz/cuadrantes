@@ -29,6 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const nameModalColorBar = document.getElementById('name-modal-color-bar');
     const confirmModalColorBar = document.getElementById('confirm-modal-color-bar');
+    
+    // Nuevos elementos para los modales de tutorial
+    const openTutorialModalButton = document.getElementById('open-tutorial-modal-button');
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const closeTutorialModalButton = document.querySelector('.close-tutorial-modal-button');
+
+    const shareMainButton = document.getElementById('share-main-button');
 
     let activeQuadrant = '';
     let nameToDelete = { quadrant: null, docId: null, name: null };
@@ -100,6 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         headerContent.classList.add('hidden-transition');
         openCircleModalButton.classList.add('hidden-transition');
+        openTutorialModalButton.classList.add('hidden-transition');
+        shareMainButton.classList.add('hidden');
 
         if (modalElement.id === 'circle-modal') {
             document.querySelector('.main-container').classList.add('hidden');
@@ -124,6 +133,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function restorePageElements() {
         headerContent.classList.remove('hidden-transition');
         openCircleModalButton.classList.remove('hidden-transition');
+        openTutorialModalButton.classList.remove('hidden-transition');
+        shareMainButton.classList.remove('hidden');
         pageContent.classList.remove('blur-background');
         isModalOpen = false;
     }
@@ -173,6 +184,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.target === confirmModal) {
                 history.back();
                 confirmModal.removeEventListener('transitionend', handler);
+            }
+        });
+    }
+    
+    function closeGeneralModal(modalElement) {
+        closeModal(modalElement);
+        modalElement.addEventListener('transitionend', function handler(e) {
+            if (e.target === modalElement) {
+                restorePageElements();
+                modalElement.removeEventListener('transitionend', handler);
             }
         });
     }
@@ -430,6 +451,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     nameModalCloseButton.addEventListener('click', () => history.back());
+    
+    // Event listeners para el nuevo modal de tutorial
+    closeTutorialModalButton.addEventListener('click', () => history.back());
+    
+    openTutorialModalButton.addEventListener('click', () => {
+        openModal(tutorialModal);
+    });
 
     window.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
@@ -454,11 +482,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentModal.id === 'name-modal') closeNameModal();
         else if (currentModal.id === 'circle-modal') closeCircleModal();
         else if (currentModal.id === 'confirm-modal') closeConfirmModal();
+        else if (currentModal.id === 'tutorial-modal') closeGeneralModal(tutorialModal);
     });
 
     openCircleModalButton.addEventListener('click', async () => {
         openCircleModalButton.classList.add('hidden-transition');
         headerContent.classList.add('hidden-transition');
+        shareMainButton.classList.add('hidden');
         openModal(circleModal);
 
         isLoading = true;
@@ -509,6 +539,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 700);
     });
 
+    shareMainButton.addEventListener('click', () => {
+        if (navigator.share) {
+            navigator.share({
+                title: document.title,
+                text: 'Descubre tu perfil de personalidad con esta herramienta visual. ¡Es genial!',
+                url: window.location.href
+            }).then(() => {
+                console.log('¡Compartido con éxito!');
+            }).catch((error) => {
+                console.error('Error al compartir:', error);
+            });
+        } else {
+            alert('Tu navegador no soporta la función de compartir. Por favor, copia y pega el enlace: ' + window.location.href);
+        }
+    });
+
     const preloadData = async () => {
         dataLoadingPromise = Promise.all([
             getNamesForQuadrant('top-left'),
@@ -522,4 +568,5 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     preloadData();
+    shareMainButton.classList.remove('hidden');
 });
