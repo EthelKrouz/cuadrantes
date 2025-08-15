@@ -32,12 +32,11 @@ body {
     z-index: 1000;
     display: flex;
     align-items: flex-start;
-    gap: 15px;
+    gap: 20px;
+    
 }
 
-.header-content {
-    /* La transición se movió a .main-header */
-}
+
 
 .main-title {
     font-family: 'Poppins', sans-serif;
@@ -111,13 +110,14 @@ body {
 }
 
 .main-container {
+    
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: min(200vw, 100%);
+    height: min(200vw, 100%); 
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 50%;
+    top: 100vw;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -231,7 +231,7 @@ body {
 
 
     .label {
-        padding: 1vmin 40px;
+        padding: 1vmin 20px;
         width: 150px;
         height: 150px;
         font-size: 16px;
