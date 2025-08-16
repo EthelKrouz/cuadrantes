@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (navigator.share) {
             navigator.share({
                 title: document.title,
-                text: 'Clasificación de Perfiles 📊',
+                text: 'Clasificación de Perfiles 📑📊⬇️ ',
                 url: window.location.href
             }).then(() => {
                 console.log('¡Compartido con éxito!');
