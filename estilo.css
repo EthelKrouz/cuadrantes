@@ -712,7 +712,7 @@ body {
 }
 
 #save-name-button {
-    width: 35%;
+    width: 100%;
     padding: 1.8vmin 5px;
     margin-top: 10px;
     font-size: min(2.7vw, 7rem);
@@ -723,7 +723,7 @@ body {
     color: #fff;
     background-color: #1B3439;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
     outline: none;
     height: auto;
