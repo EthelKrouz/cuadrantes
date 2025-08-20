@@ -118,8 +118,8 @@ body {
 
 .main-container {
     
-    position: fixed;
-    width: min(200vw, 400px);
+    position: absolute;
+    width: min(100vw, 400px);
     height: min(200vw, 800px); 
     display: flex;
     justify-content: center;
@@ -181,8 +181,8 @@ body {
     border-radius: 35px 10px;
     width: 15vmin;
     height: 15vmin;
-    max-width: 120px;
-    max-height: 90px;
+    max-width: 100px;
+    max-height: 100px;
     background: rgba(30, 30, 30, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -237,27 +237,21 @@ body {
 
 
 
-    .label {
-        padding: 1vmin 20px;
-        width: 150px;
-        height: 150px;
-        font-size: 16px;
-    }
     .label-top-left {
-        top: 35%;
-        left: 20%;
+        top: 10%;
+        left: -30px;
     }
     .label-top-right {
-        top: 35%;
-        right: 20%;
+        top: 10%;
+        right: -30px;
     }
     .label-bottom-left {
-        bottom: 35%;
-        left: 20%;
+        bottom: 10%;
+        left: -30px;
     }
     .label-bottom-right {
-        bottom: 35%;
-        right: 20%;
+        bottom: 10%;
+right: -30px;
     }
 }
 
