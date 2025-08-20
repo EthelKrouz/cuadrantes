@@ -118,9 +118,9 @@ body {
 
 .main-container {
     
-    position: relative;
-    width: min(200vw, 100%);
-    height: min(200vw, 100%); 
+    position: fixed;
+    width: min(200vw, 400px);
+    height: min(200vw, 800px); 
     display: flex;
     justify-content: center;
     align-items: center;
